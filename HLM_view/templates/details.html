@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+      <li class="breadcrumb-item active"><a href="{% url 'measurements' %}">Measurements</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Details: {{object.ob_name}}</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'plugins/jquery-dateformat.min.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+        var table = $('#measurements-table').DataTable( {
+            pageLength: 10,
+            lengthMenu: [10, 25, 50, 100, 150, 200, 250],
+            retrieve: true,
+            order: [[0, "desc"]],
+            language: {
+                emptyTable: "No measurements found for object."
+            },
+            ajax: {
+                url: "{% url 'object_measurements' object_id=meas_obj_id %}",
+                type: 'GET',
+                dataSrc: ''
+            },
+            columnDefs: [
+                {
+                    targets: 1,
+                    render: function(data, type, row, meta) {
+                        if (type == 'display') {
+                        if (!(data === null)) {
+                            data = $.format.date(data, "yyyy-MM-dd HH:mm:ss");
+                        }
+                    }
+                    return data;
+                    }
+                }
+            ],
+            columns: [
+                {"data": "mea_id"},
+                {"data": "mea_date"},
+                {"data": "mea_value1"},
+                {"data": "mea_value2"},
+                {"data": "mea_value3"},
+                {"data": "mea_value4"},
+                {"data": "mea_value5"}
+            ],
+            initComplete: function() {
+                $("#objects-table").width("100%");
+            }
+        });
+
+        setInterval( function () {
+            table.ajax.reload( null, false );
+        }, 300000 );
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+    <div class="obj-details-wrapper">
+        <h2>{{object.ob_name}}</h2>
+        <hr>
+        <h3>Object details</h3>
+        <br>
+        <table class="table table-bordered table-sm">
+            <tbody>
+                <tr>
+                    <th scope="row">Name</th>
+                    <td>{{object.ob_name}}</td>
+                    <th scope="row">Type</th>
+                    <td>{{object.ob_objecttype.ot_name}} ({{object.ob_objecttype_id}})</td>
+                </tr>
+                <tr>
+                    <th scope="row">ID</th>
+                    <td>{{object.ob_id}}</td>
+                    <th scope="row">Class</th>
+                    <td>{{object.ob_objecttype.ot_objectclass.oc_name}} ({{object.ob_objecttype.ot_objectclass_id}})</td>
+                </tr>
+                <tr>
+                    <th scope="row">Comment</th>
+                    <td>{{object.ob_comment}}</td>
+                    <th scope="row">Position</th>
+                    <td>{{object.ob_displaygroup.dg_name}}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Software Level Device</th>
+                    {% if sld is not None %}
+                        <td>{{sld.ob_name}} ({{sld.ob_id}})</td>
+                    {% else %}
+                        <td>None</td>
+                    {% endif %}
+                    <th scope="row">Position information</th>
+                    <td>{{object.ob_posinformation}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="obj-details-wrapper">
+        <hr>
+        <h3>Trends</h3>
+        <p>More information and time ranges available on the <a href='http://localhost:3000/d/5C5i_1sMk/object-measurements?orgId=1&refresh=5m&var-object={{meas_obj_id}}'>Grafana Dashboard</a></p>
+        <iframe src="http://localhost:3000/d-solo/5C5i_1sMk/object-measurements?orgId=1&refresh=5m&var-object={{meas_obj_id}}&panelId=32&from=now-24h&to=now" 
+        width="100%" height="350" frameborder="0"></iframe>
+    </div>
+
+    <div class="obj-details-wrapper">
+        <hr>
+        <h3>Measurements</h3>
+        <table class="table table-bordered table-hover table-sm" id="measurements-table">
+            <thead>
+                <tr>
+                    <th scope="col">Mea. ID</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">1 - {{mea_types.0|default:"N/A"}}</th>
+                    <th scope="col">2 - {{mea_types.1|default:"N/A"}}</th>
+                    <th scope="col">3 - {{mea_types.2|default:"N/A"}}</th>
+                    <th scope="col">4 - {{mea_types.3|default:"N/A"}}</th>
+                    <th scope="col">5 - {{mea_types.4|default:"N/A"}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Populate body with AJAX sourced data -->
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

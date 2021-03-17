@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Measurements</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'plugins/jquery-dateformat.min.js' %}"></script>
+    
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: "{% url 'measurement_types' %}",
+                dataType: 'json',
+                complete: function(data) {
+                    var mea_types = data.responseJSON;
+
+                    var table = $('#objects-table').DataTable( {
+                        pageLength: 25,
+                        lengthMenu: [10, 25, 50, 100, 150, 200, 250],
+                        retrieve: true,
+                        ajax: {
+                            url: "{% url 'objects_table_data' %}",
+                            type: 'GET',
+                            dataSrc: ''
+                        },
+                        columnDefs: [
+                            {
+                                targets: [7, 8, 9, 10, 11],
+                                defaultContent: '',
+                                render: function(data, type, row, meta) {
+                                    if (type == 'display') {
+                                        if (!(mea_types === undefined) && !(data === null)) {
+                                            // Update "meta.col - 3" if targets change
+                                            const mea_type = mea_types[row.ob_type][meta.col - 7];
+                                            data = '<span>' + (mea_type !== null ? mea_type : 'N/A') + '</span>' + data;
+                                        }
+                                    }
+                                    return data;
+                                }
+                            },
+                            {
+                                targets: [2, 3, 4, 6],
+                                visible: false
+                            }
+                        ],
+                        columns: [
+                            {"data": "ob_id"},
+                            {"data": "ob_name",
+                            "render": function(data, type, row, meta) {
+                                if (type == 'display') {
+                                    data = '<a href="' + "{% url 'detail' %}" + row.ob_id + '">' + data + '</a>'; 
+                                }
+                                return data;
+                            }
+                            },
+                            {"data": "ob_type_name"},
+                            {"data": "ob_class_name"},
+                            {"data": "ob_comment"},
+                            {"data": "dg_name"},
+                            {"data": "ob_posinformation"},
+                            {"data": "mea_values.0"},
+                            {"data": "mea_values.1"},
+                            {"data": "mea_values.2"},
+                            {"data": "mea_values.3"},
+                            {"data": "mea_values.4"},
+                            {"data": "mea_date",
+                            "render": function(data, type, row, meta) {
+                                if (type == 'display') {
+                                    if (!(data === null)) {
+                                        data = $.format.date(data, "MMM. d, yyyy, h:mm p");
+                                    }
+                                }
+                                return data;
+                            }
+                            }
+                        ],
+                        initComplete: function() {
+                            $("#objects-table").width("100%");
+                        }
+                    }
+                    );
+
+                    // update table data every few mins (300000 = 300s/5m)
+                    setInterval( function () {
+                        table.ajax.reload( null, false ); // don't reset user paging on reload
+                    }, 300000 );
+                }
+            });
+        } );
+    </script>
+
+    <!-- Hide empty measurements checkbox -->
+    <script>
+        function hideEmptyMeasurements(cb) {
+            var table = $('#objects-table').DataTable();
+            if(cb.checked){
+                $.fn.dataTable.ext.search.push(
+                    function(settings, data, dataIndex) {;
+                        const isNull = (value) => value === null;
+                        const rowData = table.row(dataIndex).data()
+                        return !rowData.mea_values.every(isNull);
+                    });
+            } else {
+                $.fn.dataTable.ext.search.pop();
+            }
+            table.draw();
+        }
+    </script>
+
+    <!-- Filter by position select -->
+    <script>
+        // Populate object position (display group) filter select options
+        $(document).ready(function() {
+            $.ajax({
+                url: "{% url 'display_groups' %}",
+                dataType: 'json',
+                complete: function(data) {
+                    var displayGroups = data.responseJSON;
+                    displayGroups.unshift({"dg_name": "All"});
+                    $.each(displayGroups, function(key, displayGroup) {
+                        var option = new Option(displayGroup.dg_name, displayGroup.dg_name);
+                        $(option).html(displayGroup.dg_name);
+                        $("#select-position-filter").append(option);
+                    });
+                }
+            });
+        });
+
+        function filterByPosition(selection) {
+            var table = $('#objects-table').DataTable();
+            // Update if columns change
+            table.columns( 5 ).search( selection.value != "All" ? selection.value : '' ).draw();
+        }
+    </script>
+
+    <!-- Columns hide/show dropdown -->
+    <script>
+        $(".checkbox-menu").on("change", "input[type='checkbox']", function() {
+            $(this).closest("li").toggleClass("active", this.checked);
+        });
+
+        $(document).on('click', '.allow-focus', function (e) {
+            e.stopPropagation();
+        });
+
+        $('#columns-display').on('change', 'input', function (e) {
+            e.preventDefault();
+    
+            var table = $('#objects-table').DataTable();
+
+            // Get the column API object
+            var column = table.column( $(this).attr('data-column') );
+    
+            // Toggle the visibility
+            column.visible( this.checked );
+            $("#objects-table").width("100%");
+        } );
+    </script>
+
+    <!-- Populate column display dropdown -->
+    <script>
+        $(document).ready(function() {
+            let columns = [
+                ["Object ID", "checked disabled"],
+                ["Object Name", "checked"],
+                ["Object Type", ""],
+                ["Object Class", ""],
+                ["Object Comment", ""],
+                ["Position", "checked"],
+                ["Position Information", ""],
+                ["Measurement 1", "checked"],
+                ["Measurement 2", "checked"],
+                ["Measurement 3", "checked"],
+                ["Measurement 4", "checked"],
+                ["Measurement 5", "checked"],
+                ["Last Update", "checked"]
+            ]
+            $.each(columns, function(i, col) {
+                $("#columns-display").append(
+                    '<li><label>'
+                    + '<input type="checkbox" class="col-toggle-vis" data-column="' + i + '"' + col[1] + '>' + col[0]
+                    + '</label></li>'
+                )
+            })
+        })
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            var element = document.getElementById("nav-measurements");
+            element.classList.add("active");
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="objects-table-wrapper">
+        <h3>Object Measurements</h3> <br>
+        <div id="objects-table-toolbar">
+            <label><input type="checkbox" id="cb-hide-empty-meas" onclick="hideEmptyMeasurements(this)"> Hide empty measurements</label>
+            <label>Position: <select class="custom-select" id="select-position-filter" onchange="filterByPosition(this)"></select></label>
+            <div class="dropdown" style="display: inline;">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" 
+                        aria-haspopup="true" aria-expanded="true">
+                    <span class="caret"></span>
+                    Display columns
+                </button>
+                <ul class="dropdown-menu checkbox-menu allow-focus" id="columns-display" aria-labelledby="dropdownMenu1">
+                </ul>
+            </div>
+        </div>
+        <table class="table table-bordered table-hover table-sm" id="objects-table">
+            <thead>
+                <tr>
+                    <th scope="col" rowspan="2">ID</th>
+                    <th scope="col" rowspan="2">Object Name</th>
+                    <th scope="col" rowspan="2">Type</th>
+                    <th scope="col" rowspan="2">Class</th>
+                    <th scope="col" rowspan="2">Comment</th>
+                    <th scope="col" rowspan="2">Position</th>
+                    <th scope="col" rowspan="2">Position Information</th>
+                    <th scope="col" colspan="5" style="text-align: center; border-bottom: none;">Measurements</th>
+                    <th scope="col" rowspan="2">Last Update</th>
+                </tr>
+                <tr>
+                    <th scope="col">1</th>
+                    <th scope="col">2</th>
+                    <th scope="col">3</th>
+                    <th scope="col">4</th>
+                    <th scope="col">5</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Populate body with AJAX sourced data -->
+            </tbody>
+        </table>    
+    </div>
+{% endblock %}

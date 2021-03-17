@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block javascript %}
+    <script>
+        $(document).ready(function() {
+            var element = document.getElementById("nav-overview");
+            element.classList.add("active");
+        })
+    </script>
+{% endblock %}

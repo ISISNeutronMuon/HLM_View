@@ -1,0 +1,59 @@
+
+/* General */
+.breadcrumb {
+    background-color: white;
+}
+
+
+/* Index */
+#objects-table tbody td span {
+    color: grey;
+    font-size: small;
+    display: block;
+}
+
+#objects-table thead th {
+    vertical-align: middle;
+}
+
+#objects-table-wrapper {
+    margin: 25px;
+}
+
+div #objects-table-toolbar > * {
+    margin-right: 25px;
+}
+
+/* Details */
+div.obj-details-wrapper {
+    margin: 0 25px 25px 25px;
+}
+
+/* Other */
+.custom-select {
+    width: auto;
+    height: auto;
+    line-height: 14px;
+}
+
+.checkbox-menu li label {
+    display: block;
+    padding: 3px 10px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+    margin:0;
+    transition: background-color .4s ease;
+}
+.checkbox-menu li input {
+    margin: 0px 5px;
+    top: 2px;
+    position: relative;
+}
+
+.checkbox-menu li label:hover,
+.checkbox-menu li label:focus {
+    background-color: #f5f5f5;
+}
