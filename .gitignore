@@ -3,6 +3,7 @@ myvenv
 static/bootstrap
 static/js
 static/plugins
+secret_key.txt
 
 ### Django ###
 *.log
