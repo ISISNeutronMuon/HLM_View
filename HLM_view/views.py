@@ -55,6 +55,54 @@ def object_search(request):
     return redirect(detail, object_id=object_id)
     
 
+def R80(request):
+    context = {}
+    return render(request, 'r80.html', context)
+
+def R55(request):
+    context = {}
+    return render(request, 'r55.html', context)
+
+def R53(request):
+    context = {}
+    return render(request, 'r53.html', context)
+
+@require_http_methods(['GET'])
+def get_overview_data(request):
+    # TODO
+    data = {
+        "R55": {"he_total": 55},
+        "R80": {"he_total": 80},
+        "R53": {"he_total": 53},
+        "R108": {"he_total": 108},
+    }
+
+    return JsonResponse(data, safe=False)
+
+@require_http_methods(['GET'])
+def get_R80_data(request):
+    # TODO
+    data = {
+        "r80_west": 1,
+        "r80_east": 2,
+        "r80_total": 3,
+        "r53_total": 16,
+        "o2_ts2_west": 7,
+        "o2_ts2_east": 8,
+        "let_df": 4,
+        "let_nimrod": 5,
+        "imat": 6,
+        "maglab": 9,
+        "maglab_df": 10,
+        "wish": 11,
+        "wish_df": 12,
+        "larmor_offspec": 13,
+        "zoom_sans2d_polref": 14,
+        "zoom_df": 15
+    }
+
+    return JsonResponse(data, safe=False)
+
 @require_http_methods(['GET'])
 def get_object_names(request):
     q = request.GET.get('q')
@@ -109,6 +157,21 @@ def get_display_groups(request):
             "dg_id": dg.dg_id,
             "dg_name": dg.dg_name,
             "dg_outofoperation": dg.dg_outofoperation
+        })
+    
+    return JsonResponse(data, safe=False)
+
+@require_http_methods(['GET'])
+def get_object_classes(request):
+    data = []
+    classes = GamObjectclass.objects.all()
+    
+    for class_ in classes:
+        data.append({
+            "oc_id": class_.oc_id,
+            "oc_function_id": class_.oc_function_id,
+            "oc_name": class_.oc_name,
+            "oc_commment": class_.oc_comment
         })
     
     return JsonResponse(data, safe=False)

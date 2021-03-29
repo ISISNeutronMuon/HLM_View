@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Overview</a></li>
+      <li class="breadcrumb-item active" aria-current="page">R80</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $(document).ready(function() {
+        var element = document.getElementById("nav-r80");
+        element.classList.add("active");
+    })
+</script>
+
+<script>
+    function updateValues() {
+        $.ajax({
+            url: "{% url 'R80_data' %}",
+            dataType: 'json',
+            success: function(data) {
+                $(".he-data").each(function() {
+                    const dataKey = $(this).attr("data-key");
+                    $(this).text(data[dataKey] + " L");
+                })
+
+            }
+    });
+}
+
+    updateValues();
+    setInterval( updateValues, 60000 );
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="mx-5 my-3">
+    <h2 class="font-weight-normal text-center">R80 - Target Station 2</h2>
+    <hr>
+    <h3 class="font-weight-normal">Helium levels</h3>
+    <br>
+    <table class="table table-bordered table-sm mb-4">
+        <tbody>
+            <tr>
+                <th scope="row">R80 West</th>
+                <td> <span class="he-data" data-key="r80_west"></span> </td>
+                <th scope="row">R80 East</th>
+                <td> <span class="he-data" data-key="r80_east"></span> </td>
+                <th scope="row">R80 Total</th>
+                <td> <span class="he-data" data-key="r80_total"></span> </td>
+            </tr>
+            <tr>
+                <th scope="row">LET Dewar Farm</th>
+                <td> <span class="he-data" data-key="let_df"></span> </td>
+                <th scope="row">WISH</th>
+                <td> <span class="he-data" data-key="wish"></span> </td>
+                <th scope="row">R53</th>
+                <td> <span class="he-data" data-key="r53_total"></span> </td>
+            </tr>
+            <tr>
+                <th scope="row">LET & NIMROD</th>
+                <td> <span class="he-data" data-key="let_nimrod"></span> </td>
+                <th scope="row">WISH Dewar Farm</th>
+                <td> <span class="he-data" data-key="wish_df"></span> </td>
+                <th scope="row">%O2 TS2 East</th>
+                <td> <span class="he-data" data-key="o2_ts2_east"></span> </td>
+            </tr>
+            <tr>
+                <th scope="row">IMAT</th>
+                <td> <span class="he-data" data-key="imat"></span> </td>
+                <th scope="row">LARMOR & OFFSPEC</th>
+                <td> <span class="he-data" data-key="larmor_offspec"></span> </td>
+                <th scope="row">%O2 TS2 West</th>
+                <td> <span class="he-data" data-key="o2_ts2_west"></span> </td>
+            </tr>
+            <tr>
+                <th scope="row">MAGLAB</th>
+                <td> <span class="he-data" data-key="maglab"></span> </td>
+                <th scope="row">ZOOM, SANS2D & POLREF</th>
+                <td> <span class="he-data" data-key="zoom_sans2d_polref"></span> </td>
+            </tr>
+            <tr>
+                <th scope="row">MAGLAB Dewar Farm</th>
+                <td> <span class="he-data" data-key="maglab_df"></span> </td>
+                <th scope="row">ZOOM Dewar Farm</th>
+                <td> <span class="he-data" data-key="zoom_df"></span> </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h3 class="font-weight-normal mb-3">TS2 Map</h3>
+    <p>Click on an instrument for trends and more information.</p>
+
+    <img src="{% static 'images/R80_upscaled.png' %}" alt="R80" usemap="#r80-map">
+    <map name="r80-map">
+        <area target="" alt="Sans2d" title="Sans2d" href="" coords="345,40,324,61,419,100,484,202,519,184,438,37" shape="poly">
+        <area target="" alt="Polref" title="Polref" href="" coords="288,125,319,69,414,108,478,204,464,220,387,160" shape="poly">
+        <area target="" alt="Inter" title="Inter" href="" coords="287,135,383,164,469,230,456,253,357,188,274,181" shape="poly">
+        <area target="" alt="Offspec" title="Offspec" href="" coords="224,188,353,195,453,258,445,287,314,251,222,246" shape="poly">
+        <area target="" alt="Larmor" title="Larmor" href="" coords="217,251,217,346,435,344,445,291,314,254" shape="poly">
+        <area target="" alt="Wish" title="Wish" href="" coords="131,365,288,358,303,451,163,489" shape="poly">
+        <area target="" alt="ChipIR" title="ChipIR" href="" coords="883,209,662,273,681,336,906,303" shape="poly">
+        <area target="" alt="Imat" title="Imat" href="" coords="919,453,1087,573,1007,673,843,577" shape="poly">
+        <area target="" alt="Let" title="Let" href="" coords="696,424,843,563,782,617,698,513,679,465" shape="poly">
+        <area target="" alt="Nimrod" title="Nimrod" href="" coords="613,462,654,445,754,617,642,644" shape="poly">
+        <area target="" alt="Zoom" title="Zoom" href="" coords="452,26,530,205,574,197,613,77,572,18" shape="poly">
+    </map>
+</div>
+{% endblock %}

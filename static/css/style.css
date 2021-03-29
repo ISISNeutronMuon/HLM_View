@@ -5,7 +5,14 @@
 }
 
 
-/* Index */
+.card-img-top {
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}
+
+
+/* Measurements */
 #objects-table tbody td span {
     color: grey;
     font-size: small;
@@ -22,11 +29,6 @@
 
 div #objects-table-toolbar > * {
     margin-right: 25px;
-}
-
-/* Details */
-div.obj-details-wrapper {
-    margin: 0 25px 25px 25px;
 }
 
 /* Other */

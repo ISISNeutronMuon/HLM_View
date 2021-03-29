@@ -8,4 +8,88 @@
             element.classList.add("active");
         })
     </script>
+
+    <!-- Update total helium values -->
+    <script>
+        function updateValues() {
+            $.ajax({
+                url: "{% url 'overview_data' %}",
+                dataType: 'json',
+                success: function(data) {
+                    $("#R55 #he-total").text(data["R55"]["he_total"]);
+                    $("#R80 #he-total").text(data["R80"]["he_total"]);
+                    $("#R53 #he-total").text(data["R53"]["he_total"]);
+                    $("#R108 #he-total").text(data["R108"]["he_total"]);
+
+                }
+        });
+    }
+
+        updateValues();
+        setInterval( updateValues, 60000 ); // 1 min
+    </script>
+
+{% endblock %}
+
+{% block content %}
+<h3 class="font-weight-light mx-5 mb-3 mt-5 text-center">Overview</h3> <hr class="mx-5">
+<div class="card-deck mx-5 text-center">
+
+    <div class="card box-shadow" id="R55">
+        <a href="{% url 'R55' %}" class="stretched-link"></a>
+        <img class="card-img-top" src="{% static 'images/R55.png' %}" alt="R55 Image">
+        <div class="card-header">
+            <h4 class="my-0 font-weight-normal">R55</h4>
+            <span class="font-weight-light">Target Station 1</span>
+        </div>
+        <div class="card-body" style="z-index: 1;">
+            <h5 class="my-0 font-weight-normal">Total He: </h5>
+            <h4 class="font-weight-normal"><span id="he-total" class="font-weight-bold"></span> L</h4>
+            <p class="font-weight-light">(Dewars + cryostats)</p>
+        </div>
+    </div>
+
+    <div class="card box-shadow" id="R80">
+        <a href="{% url 'R80' %}" class="stretched-link"></a>
+        <img class="card-img-top" src="{% static 'images/R80.png' %}" alt="R80 Image">
+        <div class="card-header">
+            <h4 class="my-0 font-weight-normal">R80</h4>
+            <span class="font-weight-light">Target Station 2</span>
+        </div>
+        <div class="card-body" style="z-index: 1;">
+            <h5 class="my-0 font-weight-normal">Total He: </h5>
+            <h4 class="font-weight-normal"><span id="he-total" class="font-weight-bold"></span> L</h4>
+            <p class="font-weight-light">(Dewars + cryostats)</p>
+        </div>
+    </div>
+
+    <div class="card box-shadow" id="R108">
+        <img class="card-img-top" src="{% static 'images/R108.png' %}" alt="R108 Image">
+        <div class="card-header">
+            <h4 class="my-0 font-weight-normal">R108</h4>
+            <span class="font-weight-light">Helium Recovery</span>
+        </div>
+        <div class="card-body" style="z-index: 1;">
+            <h5 class="my-0 font-weight-normal">Total He: </h5>
+            <h4 class="font-weight-normal"><span id="he-total" class="font-weight-bold"></span> L</h4>
+            <p class="font-weight-light">(Dewars + mother dewar + MCP gas + balloon)</p>
+        </div>
+    </div>
+
+    <div class="card box-shadow" id="R53">
+        <a href="{% url 'R53' %}" class="stretched-link"></a>
+        <img class="card-img-top" src="{% static 'images/R53.png' %}" alt="R53 Image">
+        <div class="card-header">
+            <h4 class="my-0 font-weight-normal">R53</h4>
+            <span class="font-weight-light">Materials Characterisation Lab</span>
+        </div>
+        <div class="card-body" style="z-index: 1;">
+            <h5 class="my-0 font-weight-normal">Total He: </h5>
+            <h4 class="font-weight-normal"><span id="he-total" class="font-weight-bold"></span> L</h4>
+            <p class="font-weight-light">(Dewars + cryostats)</p>
+        </div>
+    </div>
+
+</div>
+
 {% endblock %}

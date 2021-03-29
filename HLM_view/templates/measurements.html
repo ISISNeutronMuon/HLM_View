@@ -4,7 +4,7 @@
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Overview</a></li>
       <li class="breadcrumb-item active" aria-current="page">Measurements</li>
     </ol>
 </nav>
@@ -25,6 +25,7 @@
                         pageLength: 25,
                         lengthMenu: [10, 25, 50, 100, 150, 200, 250],
                         retrieve: true,
+                        stateSave: true,
                         ajax: {
                             url: "{% url 'objects_table_data' %}",
                             type: 'GET',
@@ -46,7 +47,7 @@
                                 }
                             },
                             {
-                                targets: [2, 3, 4, 6],
+                                targets: [2, 4, 6],
                                 visible: false
                             }
                         ],
@@ -102,9 +103,9 @@
             var table = $('#objects-table').DataTable();
             if(cb.checked){
                 $.fn.dataTable.ext.search.push(
-                    function(settings, data, dataIndex) {;
+                    function(settings, data, dataIndex) {
                         const isNull = (value) => value === null;
-                        const rowData = table.row(dataIndex).data()
+                        const rowData = table.row(dataIndex).data();
                         return !rowData.mea_values.every(isNull);
                     });
             } else {
@@ -126,7 +127,6 @@
                     displayGroups.unshift({"dg_name": "All"});
                     $.each(displayGroups, function(key, displayGroup) {
                         var option = new Option(displayGroup.dg_name, displayGroup.dg_name);
-                        $(option).html(displayGroup.dg_name);
                         $("#select-position-filter").append(option);
                     });
                 }
@@ -140,7 +140,7 @@
         }
     </script>
 
-    <!-- Columns hide/show dropdown -->
+    <!-- Dropdown Menus -->
     <script>
         $(".checkbox-menu").on("change", "input[type='checkbox']", function() {
             $(this).closest("li").toggleClass("active", this.checked);
@@ -149,29 +149,17 @@
         $(document).on('click', '.allow-focus', function (e) {
             e.stopPropagation();
         });
-
-        $('#columns-display').on('change', 'input', function (e) {
-            e.preventDefault();
-    
-            var table = $('#objects-table').DataTable();
-
-            // Get the column API object
-            var column = table.column( $(this).attr('data-column') );
-    
-            // Toggle the visibility
-            column.visible( this.checked );
-            $("#objects-table").width("100%");
-        } );
     </script>
 
-    <!-- Populate column display dropdown -->
+    <!-- Display columns dropdown -->
     <script>
+        // Populate column display dropdown
         $(document).ready(function() {
             let columns = [
                 ["Object ID", "checked disabled"],
                 ["Object Name", "checked"],
                 ["Object Type", ""],
-                ["Object Class", ""],
+                ["Object Class", "checked"],
                 ["Object Comment", ""],
                 ["Position", "checked"],
                 ["Position Information", ""],
@@ -190,6 +178,60 @@
                 )
             })
         })
+
+        $('#columns-display').on('change', 'input', function (e) {
+            e.preventDefault();
+    
+            var table = $('#objects-table').DataTable();
+
+            // Get the column API object
+            var column = table.column( $(this).attr('data-column') );
+    
+            // Toggle the visibility
+            column.visible( this.checked );
+            $("#objects-table").width("100%");
+        });
+    </script>
+
+    <!-- Populate obj class dropdown -->
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: "{% url 'object_classes' %}",
+                dataType: 'json',
+                complete: function(data) {
+                    const objectClasses = data.responseJSON;
+                    $.each(objectClasses, function(i, obj_class) {
+                        $("#obj-class-display").append(
+                            '<li><label>'
+                            + '<input type="checkbox" class="obj-class-filter" data-val="' + obj_class.oc_name + '" checked>' + obj_class.oc_name
+                            + '</label></li>'
+                        )
+                    })
+                }
+            });
+        });
+
+        $('#obj-class-display').on('change', 'input', function (e) {
+            e.preventDefault();
+    
+            var table = $('#objects-table').DataTable();
+
+            var checkedClasses = [];
+            $('#obj-class-display .obj-class-filter').each(function() {
+                if ( $(this).is(':checked') ) {
+                    checkedClasses.push( $(this).attr('data-val') );
+                }
+            })
+
+            // If none are checked, show nothing, instead of "no search"
+            // Update if columns change
+            if ( checkedClasses.length == 0) {
+                table.column( 3 ).search( false ).draw();
+            } else {
+                table.column( 3 ).search( checkedClasses.join('|'), true, false, true ).draw();
+            }
+        });
     </script>
 
     <script>
@@ -202,10 +244,23 @@
 
 {% block content %}
     <div id="objects-table-wrapper">
-        <h3>Object Measurements</h3> <br>
+        <h3 class="font-weight-normal">Object Measurements</h3> <br>
         <div id="objects-table-toolbar">
             <label><input type="checkbox" id="cb-hide-empty-meas" onclick="hideEmptyMeasurements(this)"> Hide empty measurements</label>
+
             <label>Position: <select class="custom-select" id="select-position-filter" onchange="filterByPosition(this)"></select></label>
+            
+            <div class="dropdown" style="display: inline;">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" 
+                        aria-haspopup="true" aria-expanded="true">
+                    <span class="caret"></span>
+                    Object class
+                </button>
+                <ul class="dropdown-menu checkbox-menu allow-focus" id="obj-class-display" aria-labelledby="dropdownMenu2"
+                style="max-height: 300px; overflow-y: auto;"> <!-- Scroll -->
+                </ul>
+            </div>
+
             <div class="dropdown" style="display: inline;">
                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" 
                         aria-haspopup="true" aria-expanded="true">

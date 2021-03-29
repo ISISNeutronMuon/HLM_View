@@ -6,7 +6,8 @@
         <script type="text/javascript" src="{% static 'js/jquery-3.5.1.min.js' %}"></script> 
         <script type="text/javascript" src="{% static 'plugins/popper.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-        <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'bootstrap/bootstrap-icons-1.4.0/bootstrap-icons.css' %}">
 
         <!-- Plugins -->
         <script type="text/javascript" src="{% static 'plugins/typeahead.bundle.min.js' %}"></script>
@@ -33,31 +34,28 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
 
-                <li class="nav-item" id="nav-overview">
+                <li class="nav-item mr-2" id="nav-overview">
                   <a class="nav-link" href="{% url 'index' %}">Overview</a>
                 </li>
 
-                <li class="nav-item" id="nav-measurements">
+                <li class="nav-item mr-2" id="nav-measurements">
                     <a class="nav-link" href="{% url 'measurements' %}">Measurements</a>
                 </li>
 
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Locations
-                  </a>
-                  <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="nav-locations-dropdown">
-                    <a class="dropdown-item" href="#">R55 - TS1</a>
-                    <a class="dropdown-item" href="#">R80 - TS2</a>
-                    <a class="dropdown-item" href="#">R108 - He Recovery</a>
-                  </div>
+                <li class="nav-item" id="nav-r55">
+                  <a class="nav-link" href="{% url 'R55' %}">R55</a>
                 </li>
 
+                <li class="nav-item" id="nav-r80">
+                  <a class="nav-link" href="{% url 'R80' %}">R80</a>
+                </li>
                 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      View
+                      R108
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="nav-locations-dropdown">
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="nav-r108-dropdown">
+                      <a class="dropdown-item" href="#">He Recovery Building</a>
                       <a class="dropdown-item" href="#">Flow</a>
                       <a class="dropdown-item" href="#">Compressor</a>
                       <a class="dropdown-item" href="#">ColdBox</a>
@@ -66,6 +64,19 @@
                     </div>
                   </li>
                   
+                  <li class="nav-item" id="nav-r53">
+                    <a class="nav-link" href="{% url 'R53' %}">R53</a>
+                  </li>
+
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Links
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="nav-links-dropdown">
+                      <a class="dropdown-item" href="http://130.246.39.174:7131/heliumrecovery/index.html" target="_blank">PLC He Recovery System</a>
+                    </div>
+                  </li>
+
               </ul>
               <form class="form-inline my-2 my-lg-0" action="{% url 'object_search' %}" method="GET">
                 <input class="form-control mr-sm-2 objectSearchTypeahead" type="search" name="q" value="{{ request.GET.q }}" required="true" placeholder="Search for an object" aria-label="Search">
