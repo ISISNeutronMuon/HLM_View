@@ -26,6 +26,46 @@
                         lengthMenu: [10, 25, 50, 100, 150, 200, 250],
                         retrieve: true,
                         stateSave: true,
+                        stateSaveParams: function(settings, data) {
+                            data.emptyMeasHidden = $('input#cb-hide-empty-meas').is(':checked');
+                            data.positionSelect = $('select#select-position-filter').val();
+                            
+                            data.objectClassDropdown = {}
+                            $('ul#obj-class-display .obj-class-filter').each( function() {
+                                const objectClass = $(this).attr('data-val');
+                                data.objectClassDropdown[ objectClass ] = $(this).is(':checked');
+                            });
+
+                            data.columnDisplayDropdown = {}
+                            $('ul#columns-display .col-toggle-vis').each( function() {
+                                const column = $(this).attr('data-column');
+                                data.columnDisplayDropdown[ column ] = $(this).is(':checked');
+                            });
+
+                        },
+                        stateLoadParams: function(settings, data) {
+                            console.log(data.positionSelect);
+                            if (data.emptyMeasHidden !== undefined) { 
+                                $('input#cb-hide-empty-meas').prop('checked', data.emptyMeasHidden) 
+                            }
+                            if (data.positionSelect !== undefined) { 
+                                $('select#select-position-filter').val(data.positionSelect) 
+                            }
+                            if (data.objectClassDropdown !== undefined) {
+                                let dict = data.objectClassDropdown
+                                for (let objectClass in dict) {
+                                    let checked = dict[objectClass];
+                                    $('ul#obj-class-display .obj-class-filter[data-val="' + objectClass + '"]').prop('checked', checked);
+                                }
+                            }
+                            if (data.columnDisplayDropdown !== undefined) {
+                                let dict = data.columnDisplayDropdown
+                                for (let column in dict) {
+                                    let checked = dict[column];
+                                    $('ul#columns-display .col-toggle-vis[data-column="' + column + '"]').prop('checked', checked);
+                                }
+                            }
+                        },
                         ajax: {
                             url: "{% url 'objects_table_data' %}",
                             type: 'GET',
@@ -251,23 +291,23 @@
             <label>Position: <select class="custom-select" id="select-position-filter" onchange="filterByPosition(this)"></select></label>
             
             <div class="dropdown" style="display: inline;">
-                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" 
+                <button class="btn btn-default dropdown-toggle" type="button" id="obj-class-dropdown" data-toggle="dropdown" 
                         aria-haspopup="true" aria-expanded="true">
                     <span class="caret"></span>
                     Object class
                 </button>
-                <ul class="dropdown-menu checkbox-menu allow-focus" id="obj-class-display" aria-labelledby="dropdownMenu2"
+                <ul class="dropdown-menu checkbox-menu allow-focus" id="obj-class-display" aria-labelledby="obj-class-dropdown"
                 style="max-height: 300px; overflow-y: auto;"> <!-- Scroll -->
                 </ul>
             </div>
 
             <div class="dropdown" style="display: inline;">
-                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" 
+                <button class="btn btn-default dropdown-toggle" type="button" id="columns-display-dropdown" data-toggle="dropdown" 
                         aria-haspopup="true" aria-expanded="true">
                     <span class="caret"></span>
                     Display columns
                 </button>
-                <ul class="dropdown-menu checkbox-menu allow-focus" id="columns-display" aria-labelledby="dropdownMenu1">
+                <ul class="dropdown-menu checkbox-menu allow-focus" id="columns-display" aria-labelledby="columns-display-dropdown">
                 </ul>
             </div>
         </div>
