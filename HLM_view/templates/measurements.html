@@ -21,6 +21,7 @@
                 complete: function(data) {
                     var mea_types = data.responseJSON;
 
+                    let hideEmptyMeasChecked = false;  // save state for custom filters
                     var table = $('#objects-table').DataTable( {
                         pageLength: 25,
                         lengthMenu: [10, 25, 50, 100, 150, 200, 250],
@@ -44,9 +45,9 @@
 
                         },
                         stateLoadParams: function(settings, data) {
-                            console.log(data.positionSelect);
                             if (data.emptyMeasHidden !== undefined) { 
                                 $('input#cb-hide-empty-meas').prop('checked', data.emptyMeasHidden) 
+                                hideEmptyMeasChecked = data.emptyMeasHidden;  // update custom filter state (used in initComplete)
                             }
                             if (data.positionSelect !== undefined) { 
                                 $('select#select-position-filter').val(data.positionSelect) 
@@ -124,6 +125,10 @@
                         ],
                         initComplete: function() {
                             $("#objects-table").width("100%");
+
+                            if (hideEmptyMeasChecked) {
+                                hideEmptyMeasurements($('input#cb-hide-empty-meas')[0]);   
+                            }
                         }
                     }
                     );
@@ -284,7 +289,7 @@
 
 {% block content %}
     <div id="objects-table-wrapper">
-        <h3 class="font-weight-normal">Object Measurements</h3> <br>
+        <h3 class="font-weight-normal mb-4">Object Measurements</h3>
         <div id="objects-table-toolbar">
             <label><input type="checkbox" id="cb-hide-empty-meas" onclick="hideEmptyMeasurements(this)"> Hide empty measurements</label>
 
@@ -320,7 +325,7 @@
                     <th scope="col" rowspan="2">Class</th>
                     <th scope="col" rowspan="2">Comment</th>
                     <th scope="col" rowspan="2">Position</th>
-                    <th scope="col" rowspan="2">Position Information</th>
+                    <th scope="col" rowspan="2">Position Details</th>
                     <th scope="col" colspan="5" style="text-align: center; border-bottom: none;">Measurements</th>
                     <th scope="col" rowspan="2">Last Update</th>
                 </tr>
