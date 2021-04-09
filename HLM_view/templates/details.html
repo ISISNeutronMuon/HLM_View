@@ -12,8 +12,6 @@
 {% endblock %}
 
 {% block javascript %}
-<script src="{% static 'plugins/jquery-dateformat.min.js' %}"></script>
-
 <script>
     $(document).ready(function() {
         var table = $('#measurements-table').DataTable( {
@@ -118,6 +116,10 @@
                     {% endif %}
                     <th scope="row">Position information</th>
                     <td>{{object.ob_posinformation}}</td>
+                </tr>
+                <tr>
+                    <th scope="row">End of Operation</th>
+                    <td>{{ object.ob_endofoperation|default_if_none:"None - object is in operation" }}</td>
                 </tr>
             </tbody>
         </table>

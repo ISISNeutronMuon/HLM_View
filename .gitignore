@@ -1,7 +1,9 @@
 myvenv
 .vscode/settings.json
 static/bootstrap
-static/js
+static/js/*
+!static/js/custom
+
 static/plugins
 secret_key.txt
 

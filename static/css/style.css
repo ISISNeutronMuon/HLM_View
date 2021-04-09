@@ -5,12 +5,18 @@
 }
 
 
+/* Index */
 .card-img-top {
     width: 100%;
     height: 15vw;
     object-fit: cover;
 }
 
+.card-deck {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    
+}
 
 /* Measurements */
 #objects-table tbody td span {
@@ -27,8 +33,11 @@
     margin: 25px;
 }
 
-
 /* Other */
+.cursor-pointer{
+    cursor: pointer;
+}
+
 .custom-select {
     width: auto;
     height: auto;

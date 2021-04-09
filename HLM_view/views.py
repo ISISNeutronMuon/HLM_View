@@ -3,16 +3,44 @@ from django.http import HttpResponse, JsonResponse, Http404
 from .models import GamObject, GamMeasurement, GamObjecttype, GamObjectclass, GamDisplaygroup, GamObjectrelation
 from django.views.decorators.http import require_http_methods
 
+
 # Create your views here.
 def index(request):
-    context = {}
+    context = {
+        "buildings": [
+            {
+                "id": "R55",
+                "desc": "Target Station 1",
+                "image": "images/R55_overview.png",
+                "total_he_info": "(Dewars + cryostats)"
+            },
+            {
+                "id": "R80",
+                "desc": "Target Station 2",
+                "image": "images/R80_overview.png",
+                "total_he_info": "(Dewars + cryostats)"
+            },
+            {
+                "id": "R108",
+                "desc": "Helium Recovery",
+                "image": "images/R108_overview.png",
+                "total_he_info": "(Dewars + mother dewar + MCP gas + balloon)"
+            },
+            {
+                "id": "R53",
+                "desc": "Materials Characterisation Lab",
+                "image": "images/R53_overview.png",
+                "total_he_info": "(Dewars + cryostats)"
+            }
+        ]
+    }
     return render(request, 'index.html', context)
 
 def measurements(request):
     context = {}
     return render(request, 'measurements.html', context)
 
-def detail(request, object_id=''):
+def detail(request, object_id=None):
     # Get object data (and check if exists)
     object_ = None
     try:
@@ -63,43 +91,77 @@ def R55(request):
     context = {}
     return render(request, 'r55.html', context)
 
+def R108(request):
+    context = {}
+    return render(request, 'r108.html', context)
+
 def R53(request):
     context = {}
     return render(request, 'r53.html', context)
 
 @require_http_methods(['GET'])
-def get_overview_data(request):
-    # TODO
+def get_coordinators_data(request):
+    # convert to litres - skip for now
+
+    coordinators = GamObject.objects.filter(ob_objecttype_id=1, ob_endofoperation=None)
+
+    def fetch_data(display_group_id: int):
+        building_coordinators = [x for x in coordinators if x.ob_displaygroup_id == display_group_id]
+        data = {
+            "he_total": 0, 
+            "coordinators": []
+        }
+        for coord in building_coordinators:
+            coordinator_data = {
+                "id": coord.ob_id,
+                "name": coord.ob_name,
+                "he_total": 0,
+                "devices": []
+            }
+            relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id=coord.ob_id).order_by('-or_date_assignment')
+            for rel in relations:
+                device = rel.or_object_id_assigned
+                if device.ob_objecttype.ot_objectclass_id == 17:  # if device object is a helium level module
+                    last_mea = GamMeasurement.objects.filter(mea_object=device.ob_id).last()
+                    device_data = {
+                        "id": device.ob_id,
+                        "name": device.ob_name,
+                        "value": round(float(last_mea.mea_value1), 3)
+                    }
+                    coordinator_data["devices"].append(device_data)
+                    coordinator_data["he_total"] += float(last_mea.mea_value1)
+                    coordinator_data["he_total"] = round(coordinator_data["he_total"], 3)
+
+            data["coordinators"].append(coordinator_data)
+            data["he_total"] += coordinator_data["he_total"]
+            data["he_total"] = round(data["he_total"], 3)
+
+        return data
+
     data = {
-        "R55": {"he_total": 55},
-        "R80": {"he_total": 80},
-        "R53": {"he_total": 53},
-        "R108": {"he_total": 108},
+        "R55": fetch_data(3),
+        "R80": fetch_data(2),
+        "R53": fetch_data(10),
+        "R108": fetch_data(1),
     }
 
     return JsonResponse(data, safe=False)
 
 @require_http_methods(['GET'])
 def get_R80_data(request):
-    # TODO
-    data = {
-        "r80_west": 1,
-        "r80_east": 2,
-        "r80_total": 3,
-        "r53_total": 16,
-        "o2_ts2_west": 7,
-        "o2_ts2_east": 8,
-        "let_df": 4,
-        "let_nimrod": 5,
-        "imat": 6,
-        "maglab": 9,
-        "maglab_df": 10,
-        "wish": 11,
-        "wish_df": 12,
-        "larmor_offspec": 13,
-        "zoom_sans2d_polref": 14,
-        "zoom_df": 15
-    }
+    data = {}
+
+    return JsonResponse(data, safe=False)
+
+@require_http_methods(['GET'])
+def get_R55_data(request):
+    data = {}
+
+    return JsonResponse(data, safe=False)
+
+@require_http_methods(['GET'])
+def get_R53_data(request):
+    data = {}
 
     return JsonResponse(data, safe=False)
 

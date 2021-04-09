@@ -12,6 +12,7 @@
         <!-- Plugins -->
         <script type="text/javascript" src="{% static 'plugins/typeahead.bundle.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'plugins/jquery.dataTables.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'plugins/jquery-dateformat.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'plugins/datatables/DataTables-1.10.24/js/dataTables.bootstrap4.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'plugins/datatables/Buttons-1.7.0/js/dataTables.buttons.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'plugins/datatables/Buttons-1.7.0/js/buttons.html5.min.js' %}"></script>
@@ -21,6 +22,8 @@
         <!-- Style -->
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-typeahead.css' %}">
+
+        <link rel="shortcut icon" href="{%  static 'images/favicon.svg' %}">
     </head>
 
     <body>
@@ -73,11 +76,14 @@
                       Links
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="nav-links-dropdown">
-                      <a class="dropdown-item" href="http://130.246.39.174:7131/heliumrecovery/index.html" target="_blank">PLC He Recovery System</a>
+                      <a class="dropdown-item" href="http://130.246.39.174:7131/heliumrecovery/index.html" target="_blank">PLC - He Recovery System</a>
                     </div>
                   </li>
 
               </ul>
+
+              <span class="mr-4 my-lg-0 text-muted font-weight-light" id="current-time"></span>
+
               <form class="form-inline my-2 my-lg-0" action="{% url 'object_search' %}" method="GET">
                 <input class="form-control mr-sm-2 objectSearchTypeahead" type="search" name="q" value="{{ request.GET.q }}" required="true" placeholder="Search for an object" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
@@ -98,7 +104,9 @@
         <!-- Custom Scripts -->
         {% url 'object_names' as obj_names_url %}
         {{ obj_names_url|json_script:"object-names-url" }}
-        <script type="text/javascript" src="{% static 'utils/object-search-autocomplete.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/custom/object-search-autocomplete.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/custom/nav-current-datetime.js' %}"></script>
+
         {% block javascript %}{% endblock %}
 
     </body>
