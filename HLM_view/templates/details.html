@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}
+- {{ object.ob_name }}
+{% endblock %}
+
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -119,7 +123,7 @@
                 </tr>
                 <tr>
                     <th scope="row">End of Operation</th>
-                    <td>{{ object.ob_endofoperation|default_if_none:"None - object is in operation" }}</td>
+                    <td>{{ object.ob_endofoperation|default_if_none:"Object is in operation" }}</td>
                 </tr>
             </tbody>
         </table>

@@ -1,25 +1,53 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}
+- {{ building.id }}
+{% endblock %}
+
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'index' %}">Overview</a></li>
-      <li class="breadcrumb-item active" aria-current="page">R80</li>
+      <li class="breadcrumb-item active" aria-current="page">Building: {{ building.id }}</li>
     </ol>
 </nav>
 {% endblock %}
 
 {% block javascript %}
+{{ building.id|json_script:"building-id" }}
+
 <script>
     $(document).ready(function() {
-        var element = document.getElementById("nav-r80");
+        var element = document.getElementById("nav-{{ building.id }}");
         element.classList.add("active");
     })
 </script>
 
+<!-- Data Cards -->
 <script>
-    /* Formatting function for row details - modify as you need */
+    function updateValues() {
+        $.ajax({
+            url: "{% url 'general_data' %}",
+            dataType: 'json',
+            success: function(data) {
+                const buildingId = JSON.parse(document.getElementById('building-id').textContent);
+                data = data[buildingId]
+                $("#he-total").text(data["he_total"]);
+                $("#oxygen-level").text(data["oxygen"]);
+                $("#purity-level").text(data["purity"]);
+            }
+        });
+    }
+
+    updateValues();
+    setInterval( updateValues, 300000 ); // 5 min
+</script>
+
+<script>
+    const buildingId = JSON.parse(document.getElementById('building-id').textContent);
+
+    /* Formatting function for row details (nested table) */
     function format ( rowData ) {
         // `rowData` is the original data object for the row
         return  '<table id="' + rowData.id + '" class="table table-bordered table-hover table-sm mx-auto" style="width: 90%;">'+
@@ -34,23 +62,31 @@
             info: false,
             order: [[1, "asc"]],
             language: {
-                emptyTable: "No coordinators found for R80." // TODO: UPDATE DEPENDING ON BUILDING
+                emptyTable: "No coordinators found for " + buildingId
             },
             ajax: {
-                url: "{% url 'coordinators_data' %}",
+                url: "{% url 'general_data' %}",
                 type: 'GET',
-                dataSrc: 'R80.coordinators' // TODO: UPDATE DEPENDING ON BUILDING
+                dataSrc: buildingId + '.coordinators'
             },
             columns: [
                 {"data": "id"},
-                {"data": "name"},
+                {"data": "name",
+                "render": function(data, type, row, meta) {
+                    if (type == 'display') {
+                        data = '<a href="' + "{% url 'detail' %}" + row.id + '">' + data + '</a>'; 
+                    }
+                    return data;
+                }
+                },
                 {"data": "he_total"},
                 {"data": "devices.length"}
             ],
             columnDefs: [
                 {
                     targets: 1,
-                    className: "coord-name"
+                    className: "coord-name",
+
                 },
                 {
                     targets: 3,
@@ -110,8 +146,31 @@
                     },
                     columns: [
                         { data: "id", title: "Device ID"},
-                        { data: "name", title: "Device Name"},
-                        { data: "value", title: "Value"}
+                        { data: "name", title: "Device Name",
+                        render: function(data, type, row, meta) {
+                                if (type == 'display') {
+                                    data = '<a href="' + "{% url 'detail' %}" + row.id + '">' + data + '</a>'; 
+                                }
+                                return data;
+                            }
+                        },
+                        { data: "value", title: "Value"},
+                        { data: "last_update", title: "Last Update",
+                        render: function(data, type, row, meta) {
+                                if (type == 'display') {
+                                    if (!(data === null)) {
+                                        data = 
+                                        "<div>" +
+                                            moment(data).fromNow() + 
+                                            "<span class=\"float-right font-weight-light\">" +
+                                                $.format.date(data, "MMM. d, yyyy, h:mm p");
+                                            "</span>" +
+                                        "</div>"
+                                    }
+                                }
+                                return data;
+                            }
+                        }
                     ]
                 });
                 
@@ -128,11 +187,34 @@
 
 {% block content %}
 <div class="mx-5 my-3">
-    <h2 class="font-weight-normal text-center">R80 - Target Station 2</h2>
-    <hr>
-    <h3 class="font-weight-normal">Helium levels</h3>
-    <br>
+    <h2 class="font-weight-normal text-center">{{ building.id }} - {{ building.desc }}</h2>
 
+    <hr>
+
+    <div class="card-deck text-center">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title font-weight-normal">Total Helium</h5>
+                <h3 class="card-text font-weight-normal"><span id="he-total"></span></h3>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title font-weight-normal">Oxygen Level</h5>
+                <h3 class="card-text font-weight-normal"><span id="oxygen-level"></span></h3>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title font-weight-normal">Purity Level</h5>
+                <h3 class="card-text font-weight-normal"><span id="purity-level"></span></h3>
+            </div>
+        </div>
+    </div>
+    
+    <hr>
+
+    <h3 class="font-weight-normal mb-4">Coordinators</h3>
     <table class="table table-bordered table-hover table-sm" id="coordinators-table">
         <thead>
             <tr>
@@ -147,9 +229,13 @@
         </tbody>
     </table>
 
+    {% if building.map %}
     <hr>
+    <h3 class="font-weight-normal mb-3">{{ building.id }} Map</h3>
+    {% with 'images/'|add:building.map as image_static %}
+        <img src="{% static image_static %}" alt="{{ building.id }} Map" style="width: 80%">
+    {% endwith %}
+    {% endif %}
 
-    <h3 class="font-weight-normal mb-3">TS2 Map</h3>
-    <img src="{% static 'images/R80_map.png' %}" alt="R80 Map" style="width: 100%">
 </div>
 {% endblock %}

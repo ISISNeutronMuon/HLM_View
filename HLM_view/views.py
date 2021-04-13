@@ -3,37 +3,41 @@ from django.http import HttpResponse, JsonResponse, Http404
 from .models import GamObject, GamMeasurement, GamObjecttype, GamObjectclass, GamDisplaygroup, GamObjectrelation
 from django.views.decorators.http import require_http_methods
 
+buildings_config = [
+        {
+            "id": "R55",
+            "desc": "Target Station 1",
+            "image": "images/R55_overview.png",
+            "total_he_info": "(Dewars + cryostats)",
+            "map": "R55_map.png"
+        },
+        {
+            "id": "R80",
+            "desc": "Target Station 2",
+            "image": "images/R80_overview.png",
+            "total_he_info": "(Dewars + cryostats)",
+            "map": "R80_map.png"
+        },
+        {
+            "id": "R108",
+            "desc": "Helium Recovery",
+            "image": "images/R108_overview.png",
+            "total_he_info": "(Dewars + mother dewar + MCP gas + balloon)"
+        },
+        {
+            "id": "R53",
+            "desc": "Materials Characterisation Lab",
+            "image": "images/R53_overview.png",
+            "total_he_info": "(Dewars + cryostats)"
+        }
+]
 
 # Create your views here.
 def index(request):
     context = {
-        "buildings": [
-            {
-                "id": "R55",
-                "desc": "Target Station 1",
-                "image": "images/R55_overview.png",
-                "total_he_info": "(Dewars + cryostats)"
-            },
-            {
-                "id": "R80",
-                "desc": "Target Station 2",
-                "image": "images/R80_overview.png",
-                "total_he_info": "(Dewars + cryostats)"
-            },
-            {
-                "id": "R108",
-                "desc": "Helium Recovery",
-                "image": "images/R108_overview.png",
-                "total_he_info": "(Dewars + mother dewar + MCP gas + balloon)"
-            },
-            {
-                "id": "R53",
-                "desc": "Materials Characterisation Lab",
-                "image": "images/R53_overview.png",
-                "total_he_info": "(Dewars + cryostats)"
-            }
-        ]
+        "buildings": buildings_config
     }
+
     return render(request, 'index.html', context)
 
 def measurements(request):
@@ -82,25 +86,16 @@ def object_search(request):
     object_id = object_.ob_id
     return redirect(detail, object_id=object_id)
     
+def building(request, building):
+    if building not in [x["id"] for x in buildings_config]:
+        raise Http404(f'Building "{building}" not found.')
 
-def R80(request):
-    context = {}
-    return render(request, 'r80.html', context)
-
-def R55(request):
-    context = {}
-    return render(request, 'r55.html', context)
-
-def R108(request):
-    context = {}
-    return render(request, 'r108.html', context)
-
-def R53(request):
-    context = {}
-    return render(request, 'r53.html', context)
+    context = {"building": next((x for x in buildings_config if x['id'] == building), None)}
+    
+    return render(request, 'building.html', context)
 
 @require_http_methods(['GET'])
-def get_coordinators_data(request):
+def get_general_data(request):
     # convert to litres - skip for now
 
     coordinators = GamObject.objects.filter(ob_objecttype_id=1, ob_endofoperation=None)
@@ -109,6 +104,8 @@ def get_coordinators_data(request):
         building_coordinators = [x for x in coordinators if x.ob_displaygroup_id == display_group_id]
         data = {
             "he_total": 0, 
+            "oxygen": "N/A",
+            "purity": "N/A",
             "coordinators": []
         }
         for coord in building_coordinators:
@@ -126,7 +123,8 @@ def get_coordinators_data(request):
                     device_data = {
                         "id": device.ob_id,
                         "name": device.ob_name,
-                        "value": round(float(last_mea.mea_value1), 3)
+                        "value": round(float(last_mea.mea_value1), 3),
+                        "last_update": last_mea.mea_date
                     }
                     coordinator_data["devices"].append(device_data)
                     coordinator_data["he_total"] += float(last_mea.mea_value1)
@@ -135,6 +133,22 @@ def get_coordinators_data(request):
             data["coordinators"].append(coordinator_data)
             data["he_total"] += coordinator_data["he_total"]
             data["he_total"] = round(data["he_total"], 3)
+
+        # Oxygen Level = Type & Class ID 22
+        oxygen_level_objects = GamObject.objects.filter(ob_objecttype_id=22, ob_displaygroup_id=display_group_id)
+        if oxygen_level_objects:
+            oxygen_level_meas = [GamMeasurement.objects.filter(mea_object=obj.ob_id).last() for obj in oxygen_level_objects]
+            oxygen_level = sum([round(mea.mea_value1, 3) for mea in oxygen_level_meas])
+            data["oxygen"] = oxygen_level
+
+        # Purity level objects for buildings
+        purity_objects = {
+            1: 177,     # R108 He Level - 177 
+            2: 73,      # TS2 He Level - 73
+            3: 71       # TS1 He Level - 71
+        }
+        if display_group_id in purity_objects:
+            data["purity"] = GamMeasurement.objects.filter(mea_object=purity_objects[display_group_id]).last().mea_value2
 
         return data
 

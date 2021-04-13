@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}
+- Overview
+{% endblock %}
+
 {% block javascript %}
     <script>
         $(document).ready(function() {
@@ -9,21 +13,23 @@
         })
     </script>
 
-    <!-- Update total helium values -->
+    <!-- Update total helium, oxygen & purity values -->
+    {{ buildings|json_script:'buildings'}}
     <script>
         function updateValues() {
             $.ajax({
-                url: "{% url 'coordinators_data' %}",
+                url: "{% url 'general_data' %}",
                 dataType: 'json',
                 success: function(data) {
-                    $("#R55 #he-total").text(data["R55"]["he_total"]);
-                    $("#R80 #he-total").text(data["R80"]["he_total"]);
-                    $("#R53 #he-total").text(data["R53"]["he_total"]);
-                    $("#R108 #he-total").text(data["R108"]["he_total"]);
-
+                    const buildings = JSON.parse(document.getElementById('buildings').textContent);
+                    buildings.forEach(building => {
+                        $("#" + building.id + " #he-total").text(data[building.id]["he_total"]);
+                        $("#" + building.id + " #oxygen-level").text(data[building.id]["oxygen"]);
+                        $("#" + building.id + " #purity-level").text(data[building.id]["purity"]);
+                    })
                 }
-        });
-    }
+            });
+        }
 
         updateValues();
         setInterval( updateValues, 300000 ); // 5 min
@@ -45,9 +51,25 @@
                 <span class="font-weight-light">{{ building.desc }}</span>
             </div>
             <div class="card-body" style="z-index: 1;">
-                <h5 class="my-0 font-weight-light">Total He: </h5>
-                <h4 class="font-weight-light"><span id="he-total" class="font-weight-normal"></span> L</h4>
-                <p class="font-weight-light text-muted">{{ building.total_he_info }}</p>
+
+                <h5 class="my-0 font-weight-light d-inline">Total He: </h5>
+                <h4 class="font-weight-light d-inline"><span id="he-total" class="font-weight-normal"></span> L</h4>
+                <p class="font-weight-light text-muted" style="max-height: 24px;">{{ building.total_he_info }}</p>
+
+                <br>
+
+                <table class="table">
+                    <tbody>
+                      <tr>
+                        <td>Oxygen Level</td>
+                        <td><span id="oxygen-level" class="font-weight-light"></span></td>
+                      </tr>
+                      <tr>
+                        <td>Purity Level</td>
+                        <td><span id="purity-level" class="font-weight-light"></span></td>
+                      </tr>
+                    </tbody>
+                  </table>  
             </div>
         </div>
 

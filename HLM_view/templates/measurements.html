@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}
+- Measurements
+{% endblock %}
+
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -294,9 +298,7 @@
             });
         });
 
-        $('#obj-class-display').on('change', 'input', function (e) {
-            e.preventDefault();
-    
+        function applyClassFilter() {
             var table = $('#objects-table').DataTable();
 
             var checkedClasses = [];
@@ -313,7 +315,19 @@
             } else {
                 table.column( 3 ).search( checkedClasses.join('|'), true, false, true ).draw();
             }
+        }
+
+        $('#obj-class-display').on('change', 'input', function (e) {
+            e.preventDefault();
+            applyClassFilter();
         });
+
+        function objClassSelectAll(select) {
+            $("#obj-class-display .obj-class-filter").each(function() {
+                $(this).prop("checked", select);
+            });
+            applyClassFilter();
+        }
     </script>
 
     <script>
@@ -340,6 +354,12 @@
                 </button>
                 <ul class="dropdown-menu checkbox-menu allow-focus" id="obj-class-display" aria-labelledby="obj-class-dropdown"
                 style="max-height: 300px; overflow-y: auto;"> <!-- Scroll -->
+                <li>
+                    <div class="d-flex justify-content-center mb-2">
+                        <button class="btn btn-outline-primary btn-sm mr-1" type="button" onclick="objClassSelectAll(1)">Select All</button>
+                        <button class="btn btn-outline-primary btn-sm" type="button" onclick="objClassSelectAll(0)">Deselect All</button>
+                    </div>
+                </li>
                 </ul>
             </div>
 
