@@ -114,13 +114,21 @@
                 <tr>
                     <th scope="row">Software Level Device</th>
                     {% if sld is not None %}
-                        <td>{{sld.ob_name}} ({{sld.ob_id}})</td>
+                        <td><a href="{% url 'detail' object_id=sld.ob_id %}">{{sld.ob_name}}</a> ({{sld.ob_id}})</td>
                     {% else %}
                         <td>None</td>
                     {% endif %}
                     <th scope="row">Position information</th>
                     <td>{{object.ob_posinformation}}</td>
                 </tr>
+                {% if coordinator is not None %}
+                <tr>
+                    <th scope="row">Coordinator</th>
+                    <td><a href="{% url 'detail' object_id=coordinator.ob_id %}">{{coordinator.ob_name}}</a> ({{coordinator.ob_id}})</td>
+                    <th scope="row">Coord. Position</th>
+                    <td>{{coordinator.ob_displaygroup.dg_name}}</td>
+                </tr>
+                {% endif %}
                 <tr>
                     <th scope="row">End of Operation</th>
                     <td>{{ object.ob_endofoperation|default_if_none:"Object is in operation" }}</td>
