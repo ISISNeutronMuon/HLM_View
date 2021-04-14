@@ -90,14 +90,16 @@
                 },
                 {
                     targets: 3,
-                    className: "show-devices",
                     render: function(data, type, row, meta) {
                         if (type == 'display') {
-                            if (data !== null) {
-                                data = data + 
-                                    '<span class="float-right px-3 cursor-pointer">' + 
-                                        '<i class="bi bi-zoom-in"></i>' +
-                                    '</span>';
+                            if (data !== null && row.devices.length > 0) {
+                                data = 
+                                    '<div class="show-devices cursor-pointer">' + 
+                                        data + 
+                                        '<span class="float-right px-3">' + 
+                                            '<i class="bi bi-zoom-in"></i>' +
+                                        '</span>' +
+                                    '</div>';
                             }
                         }
                         return data;
@@ -161,7 +163,7 @@
                                     if (!(data === null)) {
                                         data = 
                                         "<div>" +
-                                            moment(data).fromNow() + 
+                                            moment($.format.date(data, "yyyy-MM-dd HH:mm:ss"), "YYYY-MM-DD HH:mm:ss").fromNow() + 
                                             "<span class=\"float-right font-weight-light\">" +
                                                 $.format.date(data, "MMM. d, yyyy, h:mm p");
                                             "</span>" +
@@ -195,19 +197,19 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title font-weight-normal">Total Helium</h5>
-                <h3 class="card-text font-weight-normal"><span id="he-total"></span></h3>
+                <h3 class="card-text font-weight-normal"><span id="he-total">Loading...</span></h3>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title font-weight-normal">Oxygen Level</h5>
-                <h3 class="card-text font-weight-normal"><span id="oxygen-level"></span></h3>
+                <h3 class="card-text font-weight-normal"><span id="oxygen-level">Loading...</span></h3>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title font-weight-normal">Purity Level</h5>
-                <h3 class="card-text font-weight-normal"><span id="purity-level"></span></h3>
+                <h3 class="card-text font-weight-normal"><span id="purity-level">Loading...</span></h3>
             </div>
         </div>
     </div>
