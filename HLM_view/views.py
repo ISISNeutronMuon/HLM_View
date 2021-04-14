@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404, get_list_or_40
 from django.http import HttpResponse, JsonResponse, Http404
 from .models import GamObject, GamMeasurement, GamObjecttype, GamObjectclass, GamDisplaygroup, GamObjectrelation
 from django.views.decorators.http import require_http_methods
+from .utils import ObjectTypeID, DisplayGroupID, ObjectClassID, dg_purity_objects
 
 buildings_config = [
         {
             "id": "R55",
+            "displaygroup": DisplayGroupID.R55.value,
             "desc": "Target Station 1",
             "image": "images/R55_overview.png",
             "total_he_info": "(Dewars + cryostats)",
@@ -13,6 +15,7 @@ buildings_config = [
         },
         {
             "id": "R80",
+            "displaygroup": DisplayGroupID.R80.value,
             "desc": "Target Station 2",
             "image": "images/R80_overview.png",
             "total_he_info": "(Dewars + cryostats)",
@@ -20,12 +23,14 @@ buildings_config = [
         },
         {
             "id": "R108",
+            "displaygroup": DisplayGroupID.R108.value,
             "desc": "Helium Recovery",
             "image": "images/R108_overview.png",
             "total_he_info": "(Dewars + mother dewar + MCP gas + balloon)"
         },
         {
             "id": "R53",
+            "displaygroup": DisplayGroupID.R53.value,
             "desc": "Materials Characterisation Lab",
             "image": "images/R53_overview.png",
             "total_he_info": "(Dewars + cryostats)"
@@ -52,13 +57,9 @@ def detail(request, object_id=None):
     except GamObject.DoesNotExist:
         raise Http404(f"Object with ID {object_id} does not exist.")
 
-    sld = None
     obj_relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id=object_.ob_id).order_by('-or_date_assignment')
-    for rel in obj_relations:
-        # software level device obj. type id is 18
-        if rel.or_object_id_assigned.ob_objecttype_id == 18:
-            sld = rel.or_object_id_assigned
-            break
+
+    sld = next((rel.or_object_id_assigned for rel in obj_relations if rel.or_object_id_assigned.ob_objecttype_id == ObjectTypeID.SLD.value), None)
 
     # ID of object whose measurements to display (for Software Level Devices
     # which store the measurements of objects)
@@ -68,8 +69,15 @@ def detail(request, object_id=None):
     obj_class = types_obj.ob_objecttype.ot_objectclass
     mea_types = [obj_class.oc_measuretype1, obj_class.oc_measuretype2, obj_class.oc_measuretype3, obj_class.oc_measuretype4, obj_class.oc_measuretype5]
 
+    # if object display group is mobile, check if attached to a coordinator and get position
+    obj_relations_assigned = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id_assigned=object_.ob_id).order_by('-or_date_assignment')
+    obj_coordinator = None
+    if object_.ob_displaygroup_id == DisplayGroupID.Mobile.value:
+        obj_coordinator = next((rel.or_object for rel in obj_relations_assigned if rel.or_object.ob_objecttype_id == ObjectTypeID.Coordinator.value), None)
+
     context = {
         'object': object_,
+        'coordinator': obj_coordinator,
         'meas_obj_id': meas_obj_id,  
         'sld': sld,
         'mea_types': mea_types
@@ -96,13 +104,11 @@ def building(request, building):
 
 @require_http_methods(['GET'])
 def get_general_data(request):
-    # convert to litres - skip for now
+    coordinators = GamObject.objects.filter(ob_objecttype_id=ObjectTypeID.Coordinator.value, ob_endofoperation=None)
 
-    coordinators = GamObject.objects.filter(ob_objecttype_id=1, ob_endofoperation=None)
-
-    def fetch_data(display_group_id: int):
+    def fetch_building_data(display_group_id: int):
         building_coordinators = [x for x in coordinators if x.ob_displaygroup_id == display_group_id]
-        data = {
+        building_data = {
             "he_total": 0, 
             "oxygen": "N/A",
             "purity": "N/A",
@@ -118,7 +124,7 @@ def get_general_data(request):
             relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id=coord.ob_id).order_by('-or_date_assignment')
             for rel in relations:
                 device = rel.or_object_id_assigned
-                if device.ob_objecttype.ot_objectclass_id == 17:  # if device object is a helium level module
+                if device.ob_objecttype.ot_objectclass_id == ObjectClassID.HeLevelModule.value:  # if device object class is helium level module
                     last_mea = GamMeasurement.objects.filter(mea_object=device.ob_id).last()
                     device_data = {
                         "id": device.ob_id,
@@ -127,55 +133,26 @@ def get_general_data(request):
                         "last_update": last_mea.mea_date
                     }
                     coordinator_data["devices"].append(device_data)
-                    coordinator_data["he_total"] += float(last_mea.mea_value1)
-                    coordinator_data["he_total"] = round(coordinator_data["he_total"], 3)
 
-            data["coordinators"].append(coordinator_data)
-            data["he_total"] += coordinator_data["he_total"]
-            data["he_total"] = round(data["he_total"], 3)
+            coordinator_data["he_total"] = round(sum([float(x["value"]) for x in coordinator_data["devices"]]), 3)
+            building_data["coordinators"].append(coordinator_data)
 
-        # Oxygen Level = Type & Class ID 22
-        oxygen_level_objects = GamObject.objects.filter(ob_objecttype_id=22, ob_displaygroup_id=display_group_id)
+        building_data["he_total"] = round(sum([float(x["he_total"]) for x in building_data["coordinators"]]), 3)
+
+        oxygen_level_objects = GamObject.objects.filter(ob_objecttype_id=ObjectTypeID.OxygenLevel.value, ob_displaygroup_id=display_group_id)
         if oxygen_level_objects:
             oxygen_level_meas = [GamMeasurement.objects.filter(mea_object=obj.ob_id).last() for obj in oxygen_level_objects]
             oxygen_level = sum([round(mea.mea_value1, 3) for mea in oxygen_level_meas])
-            data["oxygen"] = oxygen_level
+            building_data["oxygen"] = oxygen_level
 
-        # Purity level objects for buildings
-        purity_objects = {
-            1: 177,     # R108 He Level - 177 
-            2: 73,      # TS2 He Level - 73
-            3: 71       # TS1 He Level - 71
-        }
-        if display_group_id in purity_objects:
-            data["purity"] = GamMeasurement.objects.filter(mea_object=purity_objects[display_group_id]).last().mea_value2
+        if display_group_id in dg_purity_objects:
+            building_data["purity"] = GamMeasurement.objects.filter(mea_object=purity_objects[display_group_id]).last().mea_value2
 
-        return data
+        return building_data
 
-    data = {
-        "R55": fetch_data(3),
-        "R80": fetch_data(2),
-        "R53": fetch_data(10),
-        "R108": fetch_data(1),
-    }
-
-    return JsonResponse(data, safe=False)
-
-@require_http_methods(['GET'])
-def get_R80_data(request):
     data = {}
-
-    return JsonResponse(data, safe=False)
-
-@require_http_methods(['GET'])
-def get_R55_data(request):
-    data = {}
-
-    return JsonResponse(data, safe=False)
-
-@require_http_methods(['GET'])
-def get_R53_data(request):
-    data = {}
+    for building in buildings_config:
+        data[building["id"]] = fetch_building_data(building["displaygroup"])
 
     return JsonResponse(data, safe=False)
 
