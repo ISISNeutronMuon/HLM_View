@@ -22,9 +22,9 @@ class DisplayGroupID(Enum):
 
 # IDs of objects which store the purity value of the building
 dg_purity_objects = {
-    DisplayGroupID.R108: 177,
-    DisplayGroupID.R55: 71,
-    DisplayGroupID.R80: 73
+    DisplayGroupID.R108.value: 177,
+    DisplayGroupID.R55.value: 71,
+    DisplayGroupID.R80.value: 73
 }
 
 def get_helium_value(object_id: int):

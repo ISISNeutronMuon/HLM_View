@@ -146,7 +146,7 @@ def get_general_data(request):
             building_data["oxygen"] = oxygen_level
 
         if display_group_id in dg_purity_objects:
-            building_data["purity"] = GamMeasurement.objects.filter(mea_object=purity_objects[display_group_id]).last().mea_value2
+            building_data["purity"] = GamMeasurement.objects.filter(mea_object=dg_purity_objects[display_group_id]).last().mea_value2
 
         return building_data
 
