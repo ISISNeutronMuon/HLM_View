@@ -64,25 +64,7 @@
     });
 </script>
 
-<!-- Trends time range select -->
-<script>
-    $(document).ready(function() {
-        // Months as M for Grafana
-        const ranges = ["2h", "12h", "24h", "2d", "7d", "30d", "90d", "6M", "1y", "2y", "5y"]
-        $.each(ranges, function(i, range) {
-            const text = range.replace("h", " hours").replace("y", " year(s)").replace("d", " days").replace("M", " months")
-            var option = new Option("Last " + text, range, false, range == "24h");
-            $("select#trends-range").append(option);
-        })
-    })
-
-    function updateGraphTimeRange(selection) {
-        var graph = $("iframe#trends-graph");
-        var url = new URL(graph.attr("src"));
-        url.searchParams.set("from", "now-" + selection.value);
-        graph.attr("src", url.href);
-    }
-</script>
+<script type="text/javascript" src="{% static 'js/custom/graph-range-select.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -146,14 +128,14 @@
                     <p class="float-left">More information and time ranges available on the <a href='http://localhost:3000/d/5C5i_1sMk/object-measurements?orgId=1&refresh=5m&var-object={{meas_obj_id}}'>Grafana Dashboard</a></p>
                 </div>
                 <div class="col px-0">
-                    <select class="custom-select float-right" id="trends-range" onchange="updateGraphTimeRange(this)">
+                    <select class="custom-select float-right trends-range" data-graph="trends-graph-1" onchange="updateGraphTimeRange(this)">
                     </select>
                 </div>
             </div>
         </div>
         
         <iframe src="http://localhost:3000/d-solo/5C5i_1sMk/object-measurements?orgId=1&refresh=5m&var-object={{meas_obj_id}}&panelId=32&from=now-24h&to=now" 
-        width="100%" height="350" frameborder="0" id="trends-graph"></iframe>
+        width="100%" height="350" frameborder="0" id="trends-graph-1"></iframe>
 
         <hr>
 

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404, get_list_or_40
 from django.http import HttpResponse, JsonResponse, Http404
 from .models import GamObject, GamMeasurement, GamObjecttype, GamObjectclass, GamDisplaygroup, GamObjectrelation
 from django.views.decorators.http import require_http_methods
-from .utils import ObjectTypeID, DisplayGroupID, ObjectClassID, dg_purity_objects
+from .utils import ObjectTypeID, DisplayGroupID, ObjectClassID, ObjectID, dg_purity_objects, get_building_data
 
 buildings_config = [
         {
@@ -11,7 +11,8 @@ buildings_config = [
             "desc": "Target Station 1",
             "image": "images/R55_overview.png",
             "total_he_info": "(Dewars + cryostats)",
-            "map": "R55_map.png"
+            "map": "R55_map.png",
+            "graphs": [ObjectID.R55_TOTAL.value]
         },
         {
             "id": "R80",
@@ -19,21 +20,24 @@ buildings_config = [
             "desc": "Target Station 2",
             "image": "images/R80_overview.png",
             "total_he_info": "(Dewars + cryostats)",
-            "map": "R80_map.png"
+            "map": "R80_map.png",
+            "graphs": [ObjectID.R80_TOTAL.value]
         },
         {
             "id": "R108",
             "displaygroup": DisplayGroupID.R108.value,
             "desc": "Helium Recovery",
             "image": "images/R108_overview.png",
-            "total_he_info": "(Dewars + mother dewar + MCP gas + balloon)"
+            "total_he_info": "(Dewars + mother dewar + MCP gas + balloon)",
+            "graphs": [ObjectID.R108_MCP_INVENTORY.value]
         },
         {
             "id": "R53",
             "displaygroup": DisplayGroupID.R53.value,
             "desc": "Materials Characterisation Lab",
             "image": "images/R53_overview.png",
-            "total_he_info": "(Dewars + cryostats)"
+            "total_he_info": "(Dewars + cryostats)",
+            "graphs": [ObjectID.R53_TOTAL.value, 1, 2, 3]
         }
 ]
 
@@ -104,55 +108,9 @@ def building(request, building):
 
 @require_http_methods(['GET'])
 def get_general_data(request):
-    coordinators = GamObject.objects.filter(ob_objecttype_id=ObjectTypeID.Coordinator.value, ob_endofoperation=None)
-
-    def fetch_building_data(display_group_id: int):
-        building_coordinators = [x for x in coordinators if x.ob_displaygroup_id == display_group_id]
-        building_data = {
-            "he_total": 0, 
-            "oxygen": "N/A",
-            "purity": "N/A",
-            "coordinators": []
-        }
-        for coord in building_coordinators:
-            coordinator_data = {
-                "id": coord.ob_id,
-                "name": coord.ob_name,
-                "he_total": 0,
-                "devices": []
-            }
-            relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id=coord.ob_id).order_by('-or_date_assignment')
-            for rel in relations:
-                device = rel.or_object_id_assigned
-                if device.ob_objecttype.ot_objectclass_id == ObjectClassID.HeLevelModule.value:  # if device object class is helium level module
-                    last_mea = GamMeasurement.objects.filter(mea_object=device.ob_id).last()
-                    device_data = {
-                        "id": device.ob_id,
-                        "name": device.ob_name,
-                        "value": round(float(last_mea.mea_value1), 3),
-                        "last_update": last_mea.mea_date
-                    }
-                    coordinator_data["devices"].append(device_data)
-
-            coordinator_data["he_total"] = round(sum([float(x["value"]) for x in coordinator_data["devices"]]), 3)
-            building_data["coordinators"].append(coordinator_data)
-
-        building_data["he_total"] = round(sum([float(x["he_total"]) for x in building_data["coordinators"]]), 3)
-
-        oxygen_level_objects = GamObject.objects.filter(ob_objecttype_id=ObjectTypeID.OxygenLevel.value, ob_displaygroup_id=display_group_id)
-        if oxygen_level_objects:
-            oxygen_level_meas = [GamMeasurement.objects.filter(mea_object=obj.ob_id).last() for obj in oxygen_level_objects]
-            oxygen_level = sum([round(mea.mea_value1, 3) for mea in oxygen_level_meas])
-            building_data["oxygen"] = oxygen_level
-
-        if display_group_id in dg_purity_objects:
-            building_data["purity"] = GamMeasurement.objects.filter(mea_object=dg_purity_objects[display_group_id]).last().mea_value2
-
-        return building_data
-
     data = {}
     for building in buildings_config:
-        data[building["id"]] = fetch_building_data(building["displaygroup"])
+        data[building["id"]] = get_building_data(building["displaygroup"])
 
     return JsonResponse(data, safe=False)
 

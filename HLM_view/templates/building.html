@@ -156,7 +156,8 @@
                                 return data;
                             }
                         },
-                        { data: "value", title: "Value"},
+                        { data: "he_value", title: "Helium L"},
+                        { data: "fill_percentage", title: "Fill %"},
                         { data: "last_update", title: "Last Update",
                         render: function(data, type, row, meta) {
                                 if (type == 'display') {
@@ -185,6 +186,8 @@
         }, 300000 );
     });
 </script>
+
+<script type="text/javascript" src="{% static 'js/custom/graph-range-select.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -230,6 +233,27 @@
             <!-- Populate body with AJAX sourced data -->
         </tbody>
     </table>
+
+    {% if building.graphs %}
+    <hr>
+    <h3 class="font-weight-normal mb-3">Trends</h3>
+        {% for graph_object_id in building.graphs %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col px-0 mb-2">
+                    <a href='http://localhost:3000/d/5C5i_1sMk/object-measurements?orgId=1&refresh=5m&var-object={{graph_object_id}}'>View in Grafana</a>
+                </div>
+                <div class="col px-0">
+                    <select class="custom-select float-right trends-range" data-graph="trends-graph-{{forloop.counter}}" onchange="updateGraphTimeRange(this)">
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <iframe src="http://localhost:3000/d-solo/5C5i_1sMk/object-measurements?orgId=1&refresh=5m&var-object={{graph_object_id}}&panelId=32&from=now-24h&to=now" 
+        width="100%" height="350" frameborder="0" id="trends-graph-{{forloop.counter}}" class="mb-5"></iframe>
+        {% endfor %}
+    {% endif %} 
 
     {% if building.map %}
     <hr>
