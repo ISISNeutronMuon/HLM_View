@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+- MCPs
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Overview</a></li>
+      <li class="breadcrumb-item active" aria-current="page">MCPs</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $(document).ready(function() {
+        var element = document.getElementById("nav-hps");
+        element.classList.add("active");
+    })
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div class="m-4">
+    <h2 class="font-weight-normal text-center mb-4">High Pressure System</h2>
+
+    <hr>
+
+    <table class="table table-bordered table-hover table-sm" id="mcps-table">
+        <thead>
+            <tr>
+                <th scope="col">Object ID</th>
+                <th scope="col">MCP Name</th>
+                <th scope="col">Total Helium</th>
+                <th scope="col">Connected Devices</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Populate body with AJAX sourced data -->
+        </tbody>
+    </table>
+</div>
+{% endblock %}

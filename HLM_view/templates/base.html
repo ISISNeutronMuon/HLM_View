@@ -56,31 +56,27 @@
                 <li class="nav-item" id="nav-R80">
                   <a class="nav-link" href="{% url 'building' building='R80' %}">R80</a>
                 </li>
-                
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      R108
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="nav-r108-dropdown">
-                      <a class="dropdown-item" href="{% url 'building' building='R108' %}">R108 - Helium Recovery</a>
-                      <a class="dropdown-item" href="#">High Pressure</a>
-                      <a class="dropdown-item" href="#">Low Pressure</a>
-                      <a class="dropdown-item" href="#">Liquefier</a>
-                    </div>
-                  </li>
-                  
-                  <li class="nav-item" id="nav-R53">
-                    <a class="nav-link" href="{% url 'building' building='R53' %}">R53</a>
-                  </li>
 
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Links
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="nav-links-dropdown">
-                      <a class="dropdown-item" href="http://130.246.39.174:7131/heliumrecovery/index.html" target="_blank">PLC - He Recovery System</a>
-                    </div>
-                  </li>
+                <li class="nav-item" id="nav-R108">
+                  <a class="nav-link" href="{% url 'building' building='R108' %}">R108</a>
+                </li>
+                  
+                <li class="nav-item" id="nav-R53">
+                  <a class="nav-link" href="{% url 'building' building='R53' %}">R53</a>
+                </li>
+
+                <li class="nav-item ml-2" id="nav-hps">
+                  <a class="nav-link" href="{% url 'high_pressure_system' %}">HPS</a>
+                </li>
+
+                <li class="nav-item dropdown ml-2">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Links
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="nav-links-dropdown">
+                    <a class="dropdown-item" href="http://130.246.39.174:7131/heliumrecovery/index.html" target="_blank">PLC - He Recovery System</a>
+                  </div>
+                </li>
 
               </ul>
 

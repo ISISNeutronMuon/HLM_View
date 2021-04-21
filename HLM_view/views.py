@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404, get_list_or_40
 from django.http import HttpResponse, JsonResponse, Http404
 from .models import GamObject, GamMeasurement, GamObjecttype, GamObjectclass, GamDisplaygroup, GamObjectrelation
 from django.views.decorators.http import require_http_methods
-from .utils import ObjectTypeID, DisplayGroupID, ObjectClassID, ObjectID, dg_purity_objects, get_building_data
+from .utils import ObjectTypeID, DisplayGroupID, ObjectClassID, ObjectID, dg_purity_objects, get_building_data, prepare_objects_data
 
 buildings_config = [
         {
@@ -29,7 +29,16 @@ buildings_config = [
             "desc": "Helium Recovery",
             "image": "images/R108_overview.png",
             "total_he_info": "(Dewars + mother dewar + MCP gas + balloon)",
-            "graphs": [ObjectID.R108_MCP_INVENTORY.value]
+            "graphs": [ObjectID.R108_MCP_INVENTORY.value],
+            "custom_view": "r108.html",
+            "custom_data": {
+                "cb_turbine_100": ObjectID.CB_TURBINE_100.value, 
+                "cb_turbine_101": ObjectID.CB_TURBINE_101.value,
+                "buffer_pressure": ObjectID.BUFFER_PRESSURE.value,
+                "mcp_liquid_he_inv": ObjectID.R108_MCP_INVENTORY.value,
+                "main_he_purity": ObjectID.MAIN_HE_PURITY.value,
+                "mother_dewar": ObjectID.MOTHER_DEWAR.value
+            }
         },
         {
             "id": "R53",
@@ -37,7 +46,7 @@ buildings_config = [
             "desc": "Materials Characterisation Lab",
             "image": "images/R53_overview.png",
             "total_he_info": "(Dewars + cryostats)",
-            "graphs": [ObjectID.R53_TOTAL.value, 1, 2, 3]
+            "graphs": [ObjectID.R53_TOTAL.value]
         }
 ]
 
@@ -61,9 +70,20 @@ def detail(request, object_id=None):
     except GamObject.DoesNotExist:
         raise Http404(f"Object with ID {object_id} does not exist.")
 
-    obj_relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id=object_.ob_id).order_by('-or_date_assignment')
+    sld = None
+    is_sld = None
+    assigned_object = None
+    obj_relations_assigned = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id_assigned=object_.ob_id).order_by('-or_date_assignment')
 
-    sld = next((rel.or_object_id_assigned for rel in obj_relations if rel.or_object_id_assigned.ob_objecttype_id == ObjectTypeID.SLD.value), None)
+    # If object is an SLD, find assigned object. If not, search if object has an SLD.
+    if object_.ob_objecttype_id == ObjectTypeID.SLD.value:
+        is_sld = True
+        assigned_object = next((rel.or_object for rel in obj_relations_assigned), None)
+        print("ayy", assigned_object)
+    else:
+        is_sld = False
+        obj_relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id=object_.ob_id).order_by('-or_date_assignment')
+        sld = next((rel.or_object_id_assigned for rel in obj_relations if rel.or_object_id_assigned.ob_objecttype_id == ObjectTypeID.SLD.value), None)
 
     # ID of object whose measurements to display (for Software Level Devices
     # which store the measurements of objects)
@@ -74,7 +94,6 @@ def detail(request, object_id=None):
     mea_types = [obj_class.oc_measuretype1, obj_class.oc_measuretype2, obj_class.oc_measuretype3, obj_class.oc_measuretype4, obj_class.oc_measuretype5]
 
     # if object display group is mobile, check if attached to a coordinator and get position
-    obj_relations_assigned = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id_assigned=object_.ob_id).order_by('-or_date_assignment')
     obj_coordinator = None
     if object_.ob_displaygroup_id == DisplayGroupID.Mobile.value:
         obj_coordinator = next((rel.or_object for rel in obj_relations_assigned if rel.or_object.ob_objecttype_id == ObjectTypeID.Coordinator.value), None)
@@ -84,6 +103,8 @@ def detail(request, object_id=None):
         'coordinator': obj_coordinator,
         'meas_obj_id': meas_obj_id,  
         'sld': sld,
+        'is_sld': is_sld,
+        'assigned_object': assigned_object,
         'mea_types': mea_types
     }
     return render(request, 'details.html', context)
@@ -102,15 +123,65 @@ def building(request, building):
     if building not in [x["id"] for x in buildings_config]:
         raise Http404(f'Building "{building}" not found.')
 
-    context = {"building": next((x for x in buildings_config if x['id'] == building), None)}
-    
-    return render(request, 'building.html', context)
+    building_configuration = next((x for x in buildings_config if x['id'] == building), None)
+
+    context = {"building": building_configuration}
+
+    # If builing has custom content, render its custom view (which extends the default building view)
+    if building_configuration.get('custom_view', None):
+        return render(request, building_configuration['custom_view'], context)
+    else:
+        return render(request, 'building.html', context)
+
+def high_pressure_system(request):
+    context = {}
+    return render(request, 'high-pressure.html', context)
 
 @require_http_methods(['GET'])
 def get_general_data(request):
     data = {}
     for building in buildings_config:
         data[building["id"]] = get_building_data(building["displaygroup"])
+
+    return JsonResponse(data, safe=False)
+
+@require_http_methods(['GET'])
+def get_he_recovery_data(request):
+    MCPs = GamObject.objects.filter(ob_objecttype_id=ObjectTypeID.PRESSURE_SENSOR.value, 
+                                        ob_endofoperation=None, 
+                                        ob_displaygroup_id=DisplayGroupID.R108.value)
+
+    data = {
+        "cb-turbine-100": GamMeasurement.objects.filter(mea_object=ObjectID.CB_TURBINE_100.value).last().mea_value1,
+        "cb-turbine-101": GamMeasurement.objects.filter(mea_object=ObjectID.CB_TURBINE_101.value).last().mea_value1,
+        "buffer-pressure": GamMeasurement.objects.filter(mea_object=ObjectID.BUFFER_PRESSURE.value).last().mea_value1,
+        "mother-dewar": {
+            "fill": GamMeasurement.objects.filter(mea_object=ObjectID.MOTHER_DEWAR.value).last().mea_value1,
+            "l": GamMeasurement.objects.filter(mea_object=ObjectID.MOTHER_DEWAR.value).last().mea_value5
+        },
+        "main-he-purity": GamMeasurement.objects.filter(mea_object=ObjectID.MAIN_HE_PURITY.value).last().mea_value2,
+        "mcp-inventory": GamMeasurement.objects.filter(mea_object=ObjectID.R108_MCP_INVENTORY.value).last().mea_value5,
+        "balloon": {
+            "mbar": None,   # TODO: PV needs to be implemented in the IOC
+            "l": None       # TODO: Volume is 22^3
+        }
+    }
+
+    data["helium-no-transport"] = sum([float(x) for x in [data["mcp-inventory"], data["mother-dewar"]["l"], data["balloon"]["l"]] if x is not None])
+
+    R108_coordinators_data = get_building_data(DisplayGroupID.R108.value)
+    data["total-helium"] = sum([float(x) for x in [data["helium-no-transport"], R108_coordinators_data["he_total"]] if x is not None])
+
+    return JsonResponse(data, safe=False)
+
+@require_http_methods(['GET'])
+def get_high_pressure_data(request):
+    # TODO
+    # MCPs = GamObject.objects.filter(ob_objecttype_id=ObjectTypeID.PRESSURE_SENSOR.value, 
+    #                                     ob_endofoperation=None, 
+    #                                     ob_displaygroup_id=DisplayGroupID.R108.value)
+
+    data = {}
 
     return JsonResponse(data, safe=False)
 
@@ -190,29 +261,6 @@ def get_object_classes(request):
 @require_http_methods(['GET'])
 def get_objects_table_data(request):
     objects = GamObject.objects.all()
-    data = []
-
-    for obj in objects:
-        last_mea = GamMeasurement.objects.filter(mea_object=obj.ob_id).last()
-        obj_data = {
-            'ob_id': obj.ob_id,
-            'ob_name': obj.ob_name,
-            'ob_type': obj.ob_objecttype_id,
-            'ob_type_name': obj.ob_objecttype.ot_name,
-            'ob_comment': obj.ob_comment,
-            'ob_class_name': obj.ob_objecttype.ot_objectclass.oc_name,
-            'mea_values': [
-                last_mea.mea_value1 if last_mea else None,
-                last_mea.mea_value2 if last_mea else None,
-                last_mea.mea_value3 if last_mea else None,
-                last_mea.mea_value4 if last_mea else None,
-                last_mea.mea_value5 if last_mea else None
-            ],
-            'mea_date': last_mea.mea_date if last_mea else None,
-            'dg_name': obj.ob_displaygroup.dg_name if obj.ob_displaygroup else None,
-            'ob_posinformation': obj.ob_posinformation,
-        }
-        
-        data.append(obj_data)
+    data = prepare_objects_data(objects)
 
     return JsonResponse(data, safe=False)

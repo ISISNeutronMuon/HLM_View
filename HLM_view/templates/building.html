@@ -33,7 +33,7 @@
             success: function(data) {
                 const buildingId = JSON.parse(document.getElementById('building-id').textContent);
                 data = data[buildingId]
-                $("#he-total").text(data["he_total"]);
+                $("#he-transport").text(data["he_total"]);
                 $("#oxygen-level").text(data["oxygen"]);
                 $("#purity-level").text(data["purity"]);
             }
@@ -188,6 +188,9 @@
 </script>
 
 <script type="text/javascript" src="{% static 'js/custom/graph-range-select.js' %}"></script>
+
+    {% block custom-js %}
+    {% endblock %}
 {% endblock %}
 
 {% block content %}
@@ -199,24 +202,30 @@
     <div class="card-deck text-center">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title font-weight-normal">Total Helium</h5>
-                <h3 class="card-text font-weight-normal"><span id="he-total">Loading...</span></h3>
+                <h5 class="card-title font-weight-normal">Transport Helium (L)</h5>
+                <h3 class="card-text font-weight-normal"><span id="he-transport">Loading...</span></h3>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title font-weight-normal">Oxygen Level</h5>
+                <h5 class="card-title font-weight-normal">Oxygen Level (%)</h5>
                 <h3 class="card-text font-weight-normal"><span id="oxygen-level">Loading...</span></h3>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title font-weight-normal">Purity Level</h5>
+                <h5 class="card-title font-weight-normal">Purity Level (%)</h5>
                 <h3 class="card-text font-weight-normal"><span id="purity-level">Loading...</span></h3>
             </div>
         </div>
     </div>
     
+    {% block custom-cards %}
+    {% endblock %}
+
+    {% block custom-content-upper %}
+    {% endblock %}
+
     <hr>
 
     <h3 class="font-weight-normal mb-4">Coordinators</h3>
@@ -236,7 +245,7 @@
 
     {% if building.graphs %}
     <hr>
-    <h3 class="font-weight-normal mb-3">Trends</h3>
+    <h3 class="font-weight-normal mb-3">Graphs</h3>
         {% for graph_object_id in building.graphs %}
         <div class="container-fluid">
             <div class="row">
@@ -251,9 +260,12 @@
         </div>
         
         <iframe src="http://localhost:3000/d-solo/5C5i_1sMk/object-measurements?orgId=1&refresh=5m&var-object={{graph_object_id}}&panelId=32&from=now-24h&to=now" 
-        width="100%" height="350" frameborder="0" id="trends-graph-{{forloop.counter}}" class="mb-5"></iframe>
+        width="100%" height="350" frameborder="0" id="trends-graph-{{forloop.counter}}" class="mb-4"></iframe>
         {% endfor %}
     {% endif %} 
+
+    {% block custom-content-lower %}
+    {% endblock %}
 
     {% if building.map %}
     <hr>

@@ -6,6 +6,7 @@ class ObjectTypeID(Enum):
     SLD = 18  # software level device obj. type id is 18
     Coordinator = 1
     OxygenLevel = 22  # Oxygen Level = Type & Class ID 22
+    PRESSURE_SENSOR = 6
 
 
 class ObjectClassID(Enum):
@@ -25,6 +26,13 @@ class ObjectID(Enum):
     R55_TOTAL = 135
     R53_TOTAL = 129
     R108_MCP_INVENTORY = 185
+    CB_TURBINE_100 = 182
+    CB_TURBINE_101 = 183
+    BUFFER_PRESSURE = 103
+    MOTHER_DEWAR = 187
+    MAIN_HE_PURITY = 91
+    # TODO: BALLOON_PRESSURE =  Pressure gauge PV - which object?
+
 
 # IDs of objects which store the purity value of the building
 dg_purity_objects = {
@@ -32,6 +40,32 @@ dg_purity_objects = {
     DisplayGroupID.R55.value: 71,
     DisplayGroupID.R80.value: 73
 }
+
+def prepare_objects_data(objects):
+    data = []
+    for obj in objects:
+        last_mea = GamMeasurement.objects.filter(mea_object=obj.ob_id).last()
+        obj_data = {
+            'ob_id': obj.ob_id,
+            'ob_name': obj.ob_name,
+            'ob_type': obj.ob_objecttype_id,
+            'ob_type_name': obj.ob_objecttype.ot_name,
+            'ob_comment': obj.ob_comment,
+            'ob_class_name': obj.ob_objecttype.ot_objectclass.oc_name,
+            'mea_values': [
+                last_mea.mea_value1 if last_mea else None,
+                last_mea.mea_value2 if last_mea else None,
+                last_mea.mea_value3 if last_mea else None,
+                last_mea.mea_value4 if last_mea else None,
+                last_mea.mea_value5 if last_mea else None
+            ],
+            'mea_date': last_mea.mea_date if last_mea else None,
+            'dg_name': obj.ob_displaygroup.dg_name if obj.ob_displaygroup else None,
+            'ob_posinformation': obj.ob_posinformation,
+        }   
+        data.append(obj_data)
+
+    return data
 
 def get_helium_value(object_id: int):
     try:
@@ -59,12 +93,13 @@ def get_building_data(display_group_id):
         "coordinators": get_coordinators_data(building_display_id=display_group_id)
     }
 
-    building_data["he_total"] = round(sum([float(x["he_total"]) for x in building_data["coordinators"]]), 3)
+    building_data["he_total"] = sum([float(x["he_total"]) for x in building_data["coordinators"]])
 
-    building_oxygen_levels = GamObject.objects.filter(ob_objecttype_id=ObjectTypeID.OxygenLevel.value, ob_displaygroup_id=display_group_id)
+    building_oxygen_levels = GamObject.objects.filter(ob_objecttype_id=ObjectTypeID.OxygenLevel.value, 
+                                                    ob_displaygroup_id=display_group_id)
     if building_oxygen_levels:
         oxygen_level_meas = [GamMeasurement.objects.filter(mea_object=obj.ob_id).last() for obj in building_oxygen_levels]
-        oxygen_level = sum([round(mea.mea_value1, 3) for mea in oxygen_level_meas])
+        oxygen_level = sum([mea.mea_value1 for mea in oxygen_level_meas])
         building_data["oxygen"] = oxygen_level
 
     if display_group_id in dg_purity_objects:
@@ -73,7 +108,9 @@ def get_building_data(display_group_id):
     return building_data
 
 def get_coordinators_data(building_display_id):
-    building_coordinators = GamObject.objects.filter(ob_objecttype_id=ObjectTypeID.Coordinator.value, ob_endofoperation=None, ob_displaygroup_id=building_display_id)
+    building_coordinators = GamObject.objects.filter(ob_objecttype_id=ObjectTypeID.Coordinator.value,
+                                                    ob_endofoperation=None, 
+                                                    ob_displaygroup_id=building_display_id)
     coordinators = []
     for coord in building_coordinators:
         coordinator_data = {
@@ -82,7 +119,7 @@ def get_coordinators_data(building_display_id):
             "he_total": 0,
             "devices": get_devices_data(coordinator_id=coord.ob_id)
         }
-        coordinator_data["he_total"] = round(sum([x["he_value"] for x in coordinator_data["devices"] if x["he_value"]]), 3)
+        coordinator_data["he_total"] = sum([x["he_value"] for x in coordinator_data["devices"] if x["he_value"]])
         coordinators.append(coordinator_data)
 
     return coordinators

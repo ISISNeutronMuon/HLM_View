@@ -1,0 +1,118 @@
+{% extends 'building.html' %}
+{% load static %}
+
+{% block custom-js %}
+<script>
+    function updateValues() {
+        $.ajax({
+            url: "{% url 'he_recovery_data' %}",
+            dataType: 'json',
+            success: function(data) {
+                $("#cb-turbine-100").text(data["cb-turbine-100"]);
+                $("#cb-turbine-101").text(data["cb-turbine-101"]);
+                $("#buffer-pressure").text(data["buffer-pressure"]);
+                $("#mcp-liquid-he-inv").text(data["mcp-inventory"]);
+                $("#main-he-purity").text(data["main-he-purity"]);
+                $("#mother-dewar-fill").text(data["mother-dewar"]["fill"]);
+                $("#mother-dewar-l").text(data["mother-dewar"]["l"]);
+                $("#balloon-mbar").text(data["balloon"]["mbar"]);
+                $("#balloon-l").text(data["balloon"]["l"]);
+                $("#he-total").text(data["total-helium"]);
+                $("#he-no-transport").text(data["helium-no-transport"]);                
+            }
+        });
+    }
+
+    updateValues();
+    setInterval( updateValues, 300000 ); // 5 min
+</script>
+{% endblock %}
+
+{% block custom-cards %}
+
+{% endblock %}
+
+{% block custom-content-upper %}
+
+<hr>
+<h3 class="font-weight-normal mb-4">Helium Recovery Data</h3>
+
+<div class="card-deck text-center mb-3">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title font-weight-normal">Total Helium (L)</h5>
+            <h3 class="card-text font-weight-normal"><span id="he-total">Loading...</span></h3>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title font-weight-normal">Helium (L) in MCPs + Mother Dewar + Balloon</h5>
+            <h3 class="card-text font-weight-normal"><span id="he-no-transport">Loading...</span></h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid px-0">
+    <div class="row">
+        <div class="col-4">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td><a href="{% url 'detail' object_id=building.custom_data.mcp_liquid_he_inv %}">MCP Liquid He Inventory</a></td>
+                        <td><span id="mcp-liquid-he-inv" class="mr-3">Loading...</span><span class="font-weight-light float-right">L</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="{% url 'detail' object_id=building.custom_data.main_he_purity %}">Main Helium Purity</a></td>
+                        <td><span id="main-he-purity" class="mr-3">Loading...</span><span class="font-weight-light float-right">%</span></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2"><a href="{% url 'detail' object_id=building.custom_data.mother_dewar %}">Mother Dewar Level</a></td>
+                        <td><span id="mother-dewar-fill" class="mr-3">Loading...</span><span class="font-weight-light float-right">%</span></td>
+                    </tr>
+                    <tr>
+                        <td><span id="mother-dewar-l" class="mr-3">Loading...</span><span class="font-weight-light float-right">L</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-4">
+            <table class="table table-bordered">
+                <tbody>
+                    <th colspan="2"><h4 class="font-weight-light text-center mb-0">Gas Bladder</h4></th>
+                    <tr>
+                        <td>Pressure</td>
+                        <td><span id="balloon-mbar" class="mr-3">Loading...</span><span class="font-weight-light float-right">mbar</span></td>
+                    </tr>
+                    <tr>
+                        <td>Liquid</td>
+                        <td><span id="balloon-l" class="mr-3">Loading...</span><span class="font-weight-light float-right">L</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-4">
+            <table class="table table-bordered">
+                <tbody>
+                    <th colspan="2"><h4 class="font-weight-light text-center mb-0">Liquefier</h4></th>
+                    <tr>
+                        <td><a href="{% url 'detail' object_id=building.custom_data.cb_turbine_100 %}">ColdBox Turbine 100</a></td>
+                        <td><span id="cb-turbine-100" class="mr-3">Loading...</span><span class="font-weight-light float-right">speed (rps)</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="{% url 'detail' object_id=building.custom_data.cb_turbine_101 %}">ColdBox Turbine 101</a></td>
+                        <td><span id="cb-turbine-101" class="mr-3">Loading...</span><span class="font-weight-light float-right">speed (rps)</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="{% url 'detail' object_id=building.custom_data.buffer_pressure %}">Buffer Pressure</a></td>
+                        <td><span id="buffer-pressure" class="mr-3">Loading...</span><span class="font-weight-light float-right">pressure (mbar)</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block custom-content-lower %}
+{% endblock %}
