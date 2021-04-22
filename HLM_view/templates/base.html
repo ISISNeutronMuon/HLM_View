@@ -21,11 +21,11 @@
         <script type="text/javascript" src="{% static 'plugins/datatables/Buttons-1.7.0/js/dataTables.buttons.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'plugins/datatables/Buttons-1.7.0/js/buttons.html5.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'plugins/datatables/Buttons-1.7.0/js/buttons.print.min.js' %}"></script>
-        <link href="{% static 'plugins/datatables/DataTables-1.10.24/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
 
         <!-- Style -->
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-typeahead.css' %}">
+        <link rel="stylesheet" href="{% static 'plugins/datatables/DataTables-1.10.24/css/dataTables.bootstrap4.min.css' %}">
 
         <link rel="shortcut icon" href="{%  static 'images/favicon.svg' %}">
     </head>
@@ -65,8 +65,8 @@
                   <a class="nav-link" href="{% url 'building' building='R53' %}">R53</a>
                 </li>
 
-                <li class="nav-item ml-2" id="nav-hps">
-                  <a class="nav-link" href="{% url 'high_pressure_system' %}">HPS</a>
+                <li class="nav-item ml-2" id="nav-mcps">
+                  <a class="nav-link" href="{% url 'high_pressure_system' %}">MCPs</a>
                 </li>
 
                 <li class="nav-item dropdown ml-2">
@@ -100,8 +100,7 @@
         </main>
 
         <!-- Custom Scripts -->
-        {% url 'object_names' as obj_names_url %}
-        {{ obj_names_url|json_script:"object-names-url" }}
+        {% url 'object_names' as obj_names_url %} {{ obj_names_url|json_script:"object-names-url" }}
         <script type="text/javascript" src="{% static 'js/custom/object-search-autocomplete.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/custom/nav-current-datetime.js' %}"></script>
 

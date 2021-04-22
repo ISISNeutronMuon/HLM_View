@@ -27,7 +27,7 @@
                 emptyTable: "No measurements found for object."
             },
             ajax: {
-                url: "{% url 'object_measurements' object_id=meas_obj_id %}",
+                url: "{% url 'object_measurements' object_id=meas_obj.ob_id %}",
                 type: 'GET',
                 dataSrc: ''
             },
@@ -36,11 +36,11 @@
                     targets: 1,
                     render: function(data, type, row, meta) {
                         if (type == 'display') {
-                        if (!(data === null)) {
-                            data = $.format.date(data, "yyyy-MM-dd HH:mm:ss");
+                            if (data !== null) {
+                                data = $.format.date(data, "yyyy-MM-dd HH:mm:ss");
+                            }
                         }
-                    }
-                    return data;
+                        return data;
                     }
                 }
             ],
@@ -64,13 +64,19 @@
     });
 </script>
 
+{% if devices_data %}
+{{ devices_data|json_script:"devices-data" }}
+{% url 'detail' as obj_details %} {{ obj_details|json_script:"obj-details-url" }}
+<script type="text/javascript" src="{% static 'js/custom/tables/details-devices-table.js' %}"></script>
+{% endif %}
+
 <script type="text/javascript" src="{% static 'js/custom/graph-range-select.js' %}"></script>
 {% endblock %}
 
 {% block content %}
     <div class="mx-5 my-3">
         <h2>{{object.ob_name}}</h2>
-        <hr>
+        <hr> <br>
         <h3>Object details</h3>
         <br>
         <table class="table table-bordered table-sm">
@@ -127,14 +133,36 @@
             </tbody>
         </table>
 
-        <hr>
+        <hr> <br>
+
+        {% if devices_data %}
+            <h3>Coordinator Devices</h3>
+            <table class="table table-bordered table-hover table-sm" id="devices-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Device ID</th>
+                        <th scope="col">Device Name</th>
+                        <th scope="col">Helium L</th>
+                        <th scope="col">Fill %</th>
+                        <th scope="col">Last Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Populate body with AJAX sourced data -->
+                </tbody>
+            </table>
+            <hr> <br>
+        {% endif %}
 
         <h3>Trends</h3>
-
         <div class="container-fluid">
             <div class="row">
                 <div class="col px-0">
-                    <p class="float-left">More information and time ranges available on the <a href='http://localhost:3000/d/5C5i_1sMk/object-measurements?orgId=1&refresh=5m&var-object={{meas_obj_id}}'>Grafana Dashboard</a></p>
+                    <p class="float-left">More information and time ranges available on the
+                        <a href='http://localhost:3000/d/5C5i_1sMk/object-measurements?orgId=1&refresh=5m&var-object={{meas_obj.ob_id}}'>
+                            <img src="{% static 'images/grafana.svg' %}" style="height: 1em;" class="ml-1 mr-1" />Grafana Dashboard
+                        </a>
+                    </p>
                 </div>
                 <div class="col px-0">
                     <select class="custom-select float-right trends-range" data-graph="trends-graph-1" onchange="updateGraphTimeRange(this)">
@@ -143,10 +171,10 @@
             </div>
         </div>
         
-        <iframe src="http://localhost:3000/d-solo/5C5i_1sMk/object-measurements?orgId=1&refresh=5m&var-object={{meas_obj_id}}&panelId=32&from=now-24h&to=now" 
+        <iframe src="http://localhost:3000/d-solo/5C5i_1sMk/object-measurements?orgId=1&refresh=5m&var-object={{meas_obj.ob_id}}&panelId=32&from=now-24h&to=now" 
         width="100%" height="350" frameborder="0" id="trends-graph-1"></iframe>
 
-        <hr>
+        <hr> <br>
 
         <h3>Measurements</h3>
         <table class="table table-bordered table-hover table-sm" id="measurements-table">

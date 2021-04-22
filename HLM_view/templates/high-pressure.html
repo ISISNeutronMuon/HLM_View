@@ -17,10 +17,15 @@
 {% block javascript %}
 <script>
     $(document).ready(function() {
-        var element = document.getElementById("nav-hps");
+        var element = document.getElementById("nav-mcps");
         element.classList.add("active");
     })
 </script>
+
+{% url 'hps_data' as hps_data %} {{ hps_data|json_script:"hps-data-url" }}
+{% url 'detail' as obj_detail %} {{ obj_detail|json_script:"obj-detail-url" }}
+<script type="text/javascript" src="{% static 'js/custom/tables/hps-mcps-table.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/custom/tables/hps-purity-table.js' %}"></script>
 
 {% endblock %}
 
@@ -29,14 +34,34 @@
     <h2 class="font-weight-normal text-center mb-4">High Pressure System</h2>
 
     <hr>
+    <h3 class="font-weight-normal mb-4 mt-5">MCPs</h3>
 
     <table class="table table-bordered table-hover table-sm" id="mcps-table">
         <thead>
             <tr>
-                <th scope="col">Object ID</th>
-                <th scope="col">MCP Name</th>
-                <th scope="col">Total Helium</th>
-                <th scope="col">Connected Devices</th>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Position</th>
+                <th scope="col">Pressure</th>
+                <th scope="col">Last Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Populate body with AJAX sourced data -->
+        </tbody>
+    </table>
+
+    <hr>
+    <h3 class="font-weight-normal mb-4 mt-5">Purity</h3>
+
+    <table class="table table-bordered table-hover table-sm" id="purity-table">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Position</th>
+                <th scope="col">Purity Level</th>
+                <th scope="col">Last Updated</th>
             </tr>
         </thead>
         <tbody>

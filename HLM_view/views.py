@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404, get_list_or_40
 from django.http import HttpResponse, JsonResponse, Http404
 from .models import GamObject, GamMeasurement, GamObjecttype, GamObjectclass, GamDisplaygroup, GamObjectrelation
 from django.views.decorators.http import require_http_methods
-from .utils import ObjectTypeID, DisplayGroupID, ObjectClassID, ObjectID, dg_purity_objects, get_building_data, prepare_objects_data
+from .utils import ObjectTypeID, DisplayGroupID, ObjectClassID, ObjectID, dg_purity_objects, get_building_data, get_devices_data, prepare_objects_data, hps_objects
 
 buildings_config = [
         {
@@ -71,26 +71,26 @@ def detail(request, object_id=None):
         raise Http404(f"Object with ID {object_id} does not exist.")
 
     sld = None
-    is_sld = None
     assigned_object = None
+    devices_data = None
     obj_relations_assigned = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id_assigned=object_.ob_id).order_by('-or_date_assignment')
 
-    # If object is an SLD, find assigned object. If not, search if object has an SLD.
-    if object_.ob_objecttype_id == ObjectTypeID.SLD.value:
-        is_sld = True
-        assigned_object = next((rel.or_object for rel in obj_relations_assigned), None)
-        print("ayy", assigned_object)
+    # If object is a Coordinator, fetch devices data
+    if object_.ob_objecttype_id == ObjectTypeID.Coordinator.value:
+        devices_data = get_devices_data(object_.ob_id)
     else:
-        is_sld = False
-        obj_relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id=object_.ob_id).order_by('-or_date_assignment')
-        sld = next((rel.or_object_id_assigned for rel in obj_relations if rel.or_object_id_assigned.ob_objecttype_id == ObjectTypeID.SLD.value), None)
+        # If object is a SLD, find assigned object. If not, search if object has a SLD.
+        if object_.ob_objecttype_id == ObjectTypeID.SLD.value:
+            assigned_object = next((rel.or_object for rel in obj_relations_assigned), None)
+        else:
+            obj_relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id=object_.ob_id).order_by('-or_date_assignment')
+            sld = next((rel.or_object_id_assigned for rel in obj_relations if rel.or_object_id_assigned.ob_objecttype_id == ObjectTypeID.SLD.value), None)
 
     # ID of object whose measurements to display (for Software Level Devices
     # which store the measurements of objects)
-    meas_obj_id = sld.ob_id if sld else object_.ob_id
+    meas_obj = sld if sld else object_
 
-    types_obj = sld if sld else object_
-    obj_class = types_obj.ob_objecttype.ot_objectclass
+    obj_class = meas_obj.ob_objecttype.ot_objectclass
     mea_types = [obj_class.oc_measuretype1, obj_class.oc_measuretype2, obj_class.oc_measuretype3, obj_class.oc_measuretype4, obj_class.oc_measuretype5]
 
     # if object display group is mobile, check if attached to a coordinator and get position
@@ -101,12 +101,14 @@ def detail(request, object_id=None):
     context = {
         'object': object_,
         'coordinator': obj_coordinator,
-        'meas_obj_id': meas_obj_id,  
+        'meas_obj': meas_obj,  
         'sld': sld,
-        'is_sld': is_sld,
+        'is_sld': object_.ob_objecttype_id == ObjectTypeID.SLD.value,
         'assigned_object': assigned_object,
+        'devices_data': devices_data,
         'mea_types': mea_types
     }
+
     return render(request, 'details.html', context)
 
 def object_search(request):
@@ -176,12 +178,13 @@ def get_he_recovery_data(request):
 
 @require_http_methods(['GET'])
 def get_high_pressure_data(request):
-    # TODO
-    # MCPs = GamObject.objects.filter(ob_objecttype_id=ObjectTypeID.PRESSURE_SENSOR.value, 
-    #                                     ob_endofoperation=None, 
-    #                                     ob_displaygroup_id=DisplayGroupID.R108.value)
+    mcps = GamObject.objects.filter(ob_id__in=hps_objects, ob_objecttype_id=ObjectTypeID.PRESSURE_SENSOR.value)
+    purity = GamObject.objects.filter(ob_id__in=hps_objects, ob_objecttype_id=ObjectTypeID.CONTAMINATION.value)
 
-    data = {}
+    data = {
+        "mcps": prepare_objects_data(mcps),
+        "purity": prepare_objects_data(purity)
+    }
 
     return JsonResponse(data, safe=False)
 

@@ -1,5 +1,4 @@
 from .models import GamObject, GamMeasurement, GamObjecttype, GamObjectclass, GamDisplaygroup, GamObjectrelation
-
 from enum import Enum
 
 class ObjectTypeID(Enum):
@@ -7,6 +6,7 @@ class ObjectTypeID(Enum):
     Coordinator = 1
     OxygenLevel = 22  # Oxygen Level = Type & Class ID 22
     PRESSURE_SENSOR = 6
+    CONTAMINATION = 10
 
 
 class ObjectClassID(Enum):
@@ -31,7 +31,7 @@ class ObjectID(Enum):
     BUFFER_PRESSURE = 103
     MOTHER_DEWAR = 187
     MAIN_HE_PURITY = 91
-    # TODO: BALLOON_PRESSURE =  Pressure gauge PV - which object?
+    # TODO: BALLOON_PRESSURE =  No object in the DB - PV not yet implemented
 
 
 # IDs of objects which store the purity value of the building
@@ -40,6 +40,36 @@ dg_purity_objects = {
     DisplayGroupID.R55.value: 71,
     DisplayGroupID.R80.value: 73
 }
+
+# List of objects to display in the high pressure system view
+# TODO: Configure HPS objects in the DB rather than here?
+hps_objects = [
+    70,  # TS1 He Gas Resupply
+    71,  # TS1 Helium Resupply Purity
+    72,  # TS2 He Gas Resupply
+    73,  # TS2 Helium Resupply Purity
+    74,  # MCP1 Impure He
+    75,  # MCP2 Impure He
+    76,  # Bank 2 Impure Helium Purity Avg
+    77,  # MCP1 Helium Spare Storage Bank 5
+    78,  # MCP2 Helium Spare Storage Bank 5
+    79,  # Helium Spare Storage Bank 5 Purity
+    80,  # MCP1 Helium Spare Storage Bank 6
+    81,  # MCP2 Helium Spare Storage Bank 6
+    82,  # Helium Spare Storage Bank 6 Purity
+    83,  # MCP1 Helium Spare Storage Bank 7
+    84,  # MCP2 Helium Spare Storage Bank 7
+    85,  # Helium Spare Storage Bank 7 Purity
+    86,  # MCP1 Helium Spare Storage Bank 8
+    87,  # MCP2 Helium Spare Storage Bank 8
+    88,  # Helium Spare Storage Bank 8 Purity
+    89,  # MCP1 Main Helium
+    90,  # MCP2 Main Helium
+    91,  # Main Helium Purity
+    92,  # MCP1 DLS Main Helium
+    93,  # MCP2 DLS Main Helium
+    94,  # DLS Main Helium Purity
+]
 
 def prepare_objects_data(objects):
     data = []
@@ -66,24 +96,6 @@ def prepare_objects_data(objects):
         data.append(obj_data)
 
     return data
-
-def get_helium_value(object_id: int):
-    try:
-        obj = GamObject.objects.get(ob_id=object_id)
-    except GamObject.DoesNotExist:
-        return None
-
-    last_measurement = GamMeasurement.objects.filter(mea_object=object_id).last()
-    
-    value = {
-        10: lambda x: x.mea_value2,
-        12: lambda x: x.mea_value5,
-        18: lambda x: x.mea_value5,
-        22: lambda x: x.mea_value1,
-    }[obj.ob_objecttype_id](last_measurement)
-
-    return value
-
 
 def get_building_data(display_group_id):
     building_data = {
