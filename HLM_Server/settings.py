@@ -167,17 +167,19 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': LOG_PATH + 'debug.log',
-            'maxBytes': 10000000,  # 10 MBs
+            'maxBytes': 100000000,  # 100 MBs
             'backupCount': 10,
             'formatter': 'verbose',
+            'delay': True,  # To fix PermissionError with Django
         },
         'err_file': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': LOG_PATH + 'error.log',
-            'maxBytes': 10000000,  # 10 MBs
+            'maxBytes': 100000000,  # 100 MBs
             'backupCount': 10,
             'formatter': 'verbose',
+            'delay': True,  # To fix PermissionError with Django
         },
         'console': {
             'level': 'INFO',
