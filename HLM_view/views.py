@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404, get_list_or_40
 from django.http import HttpResponse, JsonResponse, Http404
 from .models import GamObject, GamMeasurement, GamObjecttype, GamObjectclass, GamDisplaygroup, GamObjectrelation
 from django.views.decorators.http import require_http_methods
-from .utils import ObjectTypeID, DisplayGroupID, ObjectClassID, ObjectID, dg_purity_objects, get_building_data, get_devices_data, prepare_objects_data, hps_objects
+from .utils import ObjectTypeID, DisplayGroupID, ObjectClassID, ObjectID, dg_purity_objects, get_building_data, \
+get_devices_data, prepare_objects_data, hps_objects, fetch_r108_data
 
 buildings_config = [
         {
@@ -140,39 +141,31 @@ def high_pressure_system(request):
     return render(request, 'high-pressure.html', context)
 
 @require_http_methods(['GET'])
-def get_general_data(request):
+def get_overview_data(request):
     data = {}
     for building in buildings_config:
         data[building["id"]] = get_building_data(building["displaygroup"])
+
+    # Add custom R108 data as the total He value for R108
+    r108_data = fetch_r108_data()
+    data["R108"]["he_total"] = r108_data["total-helium"]
+
+    return JsonResponse(data, safe=False)
+
+@require_http_methods(['GET'])
+def get_general_data(request, building_id):
+    building_config = next((building for building in buildings_config if building["id"] == building_id), None)
+
+    if not building_config:
+        raise Http404(f"Could not fetch data - Building {building_id} was not found.")
+
+    data = get_building_data(building_config["displaygroup"])
 
     return JsonResponse(data, safe=False)
 
 @require_http_methods(['GET'])
 def get_he_recovery_data(request):
-    MCPs = GamObject.objects.filter(ob_objecttype_id=ObjectTypeID.PRESSURE_SENSOR.value, 
-                                        ob_endofoperation=None, 
-                                        ob_displaygroup_id=DisplayGroupID.R108.value)
-
-    data = {
-        "cb-turbine-100": GamMeasurement.objects.filter(mea_object=ObjectID.CB_TURBINE_100.value).last().mea_value1,
-        "cb-turbine-101": GamMeasurement.objects.filter(mea_object=ObjectID.CB_TURBINE_101.value).last().mea_value1,
-        "buffer-pressure": GamMeasurement.objects.filter(mea_object=ObjectID.BUFFER_PRESSURE.value).last().mea_value1,
-        "mother-dewar": {
-            "fill": GamMeasurement.objects.filter(mea_object=ObjectID.MOTHER_DEWAR.value).last().mea_value1,
-            "l": GamMeasurement.objects.filter(mea_object=ObjectID.MOTHER_DEWAR.value).last().mea_value5
-        },
-        "main-he-purity": GamMeasurement.objects.filter(mea_object=ObjectID.MAIN_HE_PURITY.value).last().mea_value2,
-        "mcp-inventory": GamMeasurement.objects.filter(mea_object=ObjectID.R108_MCP_INVENTORY.value).last().mea_value5,
-        "balloon": {
-            "mbar": None,   # TODO: PV needs to be implemented in the IOC
-            "l": None       # TODO: Volume is 22^3
-        }
-    }
-
-    data["helium-no-transport"] = sum([float(x) for x in [data["mcp-inventory"], data["mother-dewar"]["l"], data["balloon"]["l"]] if x is not None])
-
-    R108_coordinators_data = get_building_data(DisplayGroupID.R108.value)
-    data["total-helium"] = sum([float(x) for x in [data["helium-no-transport"], R108_coordinators_data["he_total"]] if x is not None])
+    data = fetch_r108_data()
 
     return JsonResponse(data, safe=False)
 

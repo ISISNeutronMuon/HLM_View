@@ -18,7 +18,7 @@
     <script>
         function updateValues() {
             $.ajax({
-                url: "{% url 'general_data' %}",
+                url: "{% url 'overview_data' %}",
                 dataType: 'json',
                 success: function(data) {
                     const buildings = JSON.parse(document.getElementById('buildings').textContent);

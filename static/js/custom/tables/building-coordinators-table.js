@@ -1,5 +1,5 @@
 const buildingId = JSON.parse(document.getElementById('building-id').textContent);
-var generalDataURL = JSON.parse(document.getElementById('general-data-url').textContent);
+var buildingDataURL = JSON.parse(document.getElementById('general-data-url').textContent);
 var objDetailsURL = JSON.parse(document.getElementById('obj-details-url').textContent);
 
 
@@ -21,41 +21,73 @@ $(document).ready(function() {
             emptyTable: "No coordinators found for " + buildingId
         },
         ajax: {
-            url: generalDataURL,
+            url: buildingDataURL,
             type: 'GET',
-            dataSrc: buildingId + '.coordinators'
+            dataSrc: 'coordinators'
         },
         columns: [
             {"data": "id"},
-            {"data": "name",
-            "render": function(data, type, row, meta) {
-                if (type == 'display') {
-                    data = '<a href="' + objDetailsURL + row.id + '">' + data + '</a>'; 
-                }
-                return data;
-            }
-            },
+            {"data": "name"},
             {"data": "he_total"},
-            {"data": "devices.length"}
+            {"data": "devices.length" }
         ],
         columnDefs: [
             {
                 targets: 1,
                 className: "coord-name",
+                render: function(data, type, row, meta) {
+                    if (type == 'display') {
+                        data = '<a href="' + objDetailsURL + row.id + '">' + data + '</a>'; 
+                    }
+                    return data;
+                }
 
             },
             {
                 targets: 3,
                 render: function(data, type, row, meta) {
                     if (type == 'display') {
-                        if (data !== null && row.devices.length > 0) {
-                            data = 
-                                '<div class="show-devices cursor-pointer">' + 
-                                    data + 
-                                    '<span class="float-right px-3">' + 
-                                        '<i class="bi bi-zoom-in"></i>' +
+                        if (data !== null) {
+                            const stale_warning = function() {
+                                if (row.warnings.stale_devices.length > 0) {
+                                    return '<span class="text-warning mx-2">' + 
+                                                row.warnings.stale_devices.length + ' stale' +
+                                            '</span>'
+                                }
+                                return ''
+                            }
+
+                            const no_value_warning = function() {
+                                if (row.warnings.no_value_devices.length > 0) {
+                                    return  '<span class="text-danger mx-2">' + 
+                                                row.warnings.no_value_devices.length + ' He L N/A' +
+                                            '</span>'
+                                }
+                                return ''
+                            }
+
+                            // If coordinator has devices connected to it, enable nested table display of connected devices
+                            // and check for warnings
+                            if (row.devices.length > 0) {
+                                data = 
+                                '<div class="show-devices cursor-pointer d-flex">' + 
+                                    '<span class="float-left">' + 
+                                        row.devices.length + 
                                     '</span>' +
+                                    '<div class="ml-auto">' +
+                                        '<div class="mr-4 d-inline">' +
+                                            stale_warning() +
+                                            no_value_warning() + 
+                                        '</div>' +
+                                        '<span class="mr-3">' + 
+                                            '<i class="bi bi-zoom-in"></i>' +
+                                        '</span>' +
+                                    '</div>' +
                                 '</div>';
+                            } else {
+                                data = row.devices.length
+                            }
+
                         }
                     }
                     return data;
@@ -103,24 +135,47 @@ $(document).ready(function() {
                     emptyTable: "No devices found for this coordinator."
                 },
                 columns: [
-                    { data: "id", title: "Device ID"},
-                    { data: "name", title: "Device Name",
-                    render: function(data, type, row, meta) {
+                    { data: "id", title: "Device ID" },
+                    { data: "name", title: "Device Name" },
+                    { data: "he_value", title: "Helium (L)" },
+                    { data: "fill_percentage", title: "Fill (%)" },
+                    { data: "last_update", title: "Last Update" }
+                ],
+                columnDefs: [
+                    {
+                        targets: 1,
+                        render: function(data, type, row, meta) {
                             if (type == 'display') {
                                 data = '<a href="' + objDetailsURL + row.id + '">' + data + '</a>'; 
                             }
                             return data;
                         }
                     },
-                    { data: "he_value", title: "Helium L"},
-                    { data: "fill_percentage", title: "Fill %"},
-                    { data: "last_update", title: "Last Update",
-                    render: function(data, type, row, meta) {
+                    {
+                        targets: 2,
+                        render: function(data, type, row, meta) {
+                            if (type == 'display') {
+                                if (data === "N/A") {
+                                    data = '<span class="text-danger">' + data + '</span>';
+                                }
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        targets: 4,
+                        render: function(data, type, row, meta) {
                             if (type == 'display') {
                                 if (!(data === null)) {
+                                    let relative_time = moment($.format.date(data, "yyyy-MM-dd HH:mm:ss"), "YYYY-MM-DD HH:mm:ss").fromNow()
+
+                                    if (row.warnings.is_stale == true) {
+                                        relative_time = relative_time + '<span class="text-warning"> stale</span>';
+                                    }
+                                    
                                     data = 
                                     "<div>" +
-                                        moment($.format.date(data, "yyyy-MM-dd HH:mm:ss"), "YYYY-MM-DD HH:mm:ss").fromNow() + 
+                                        relative_time +
                                         "<span class=\"float-right font-weight-light\">" +
                                             $.format.date(data, "MMM. d, yyyy, h:mm p");
                                         "</span>" +

@@ -23,7 +23,7 @@
 </script>
 
 {{ building.id|json_script:"building-id" }}
-{% url 'general_data' as general_data %} {{ general_data|json_script:"general-data-url" }}
+{% url 'general_data' building_id=building.id as general_data %} {{ general_data|json_script:"general-data-url" }}
 {% url 'detail' as obj_details %} {{ obj_details|json_script:"obj-details-url" }}
 
 

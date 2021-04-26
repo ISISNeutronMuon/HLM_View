@@ -16,7 +16,8 @@ urlpatterns = [
     path('display_groups/', views.get_display_groups, name='display_groups'),
     path('object_classes/', views.get_object_classes, name='object_classes'),
     path('object_measurements/<int:object_id>', views.get_object_measurements, name='object_measurements'),
-    path('general_data/', views.get_general_data, name='general_data'),
+    path('general_data/<str:building_id>', views.get_general_data, name='general_data'),
+    path('overview_data/', views.get_overview_data, name='overview_data'),
     path('he_recovery_data/', views.get_he_recovery_data, name='he_recovery_data'),
     path('hps_data/', views.get_high_pressure_data, name='hps_data')
 ]
