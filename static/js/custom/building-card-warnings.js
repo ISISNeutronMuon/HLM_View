@@ -10,7 +10,8 @@ function setWarnings() {
             // Stale devices
             if (data.warnings.stale_devices.length > 0) {
                 // Display the stale devices warning icon
-                $('#stale-devices-wrapper').toggleClass('d-none', false);
+                $('#stale-devices-wrapper').addClass('d-inline').removeClass('d-none');
+
 
                 const device_count = data.warnings.stale_devices.reduce((count, current) => count + current.length, 0);
 
@@ -35,13 +36,13 @@ function setWarnings() {
                     })
                 })
             } else {
-                $('#stale-devices-wrapper').toggleClass('d-none', true);
+                $('#stale-devices-wrapper').addClass('d-none').removeClass('d-inline');
             }
 
             // Devices with no Helium Litres value
             if (data.warnings.no_value_devices.length > 0) {
                 // Display the warning icon
-                $('#no-value-devices-wrapper').toggleClass('d-none', false);
+                $('#no-value-devices-wrapper').addClass('d-inline').removeClass('d-none');
 
                 const device_count = data.warnings.no_value_devices.reduce((count, current) => count + current.length, 0);
 
@@ -66,7 +67,7 @@ function setWarnings() {
                     })
                 })
             } else {
-                $('#no-value-devices-wrapper').toggleClass('d-none', true);
+                $('#no-value-devices-wrapper').addClass('d-none').removeClass('d-inline');
             }
 
         }
