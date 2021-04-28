@@ -2,7 +2,6 @@
 
 var buildingDataURL = JSON.parse(document.getElementById('general-data-url').textContent);
 
-
 function updateValues() {
     $.ajax({
         url: buildingDataURL,
@@ -15,5 +14,7 @@ function updateValues() {
     });
 }
 
-updateValues();
-setInterval( updateValues, 300000 ); // 5 min
+$(document).ready(function() {
+    updateValues();
+    setInterval( updateValues, 300000 ); // 5 min
+});

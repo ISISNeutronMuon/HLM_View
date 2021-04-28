@@ -104,6 +104,12 @@
         <script type="text/javascript" src="{% static 'js/custom/object-search-autocomplete.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/custom/nav-current-datetime.js' %}"></script>
 
+        <script>
+          $(document).on('click', '.allow-focus', function (e) {
+              e.stopPropagation();
+          });
+        </script>
+
         {% block javascript %}{% endblock %}
 
     </body>

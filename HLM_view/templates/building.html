@@ -29,6 +29,7 @@
 
 <script type="text/javascript" src="{% static 'js/custom/building-main-values.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/custom/tables/building-coordinators-table.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/custom/building-card-warnings.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/custom/graph-range-select.js' %}"></script>
 
 {% block custom-js %}
@@ -44,9 +45,41 @@
 
     <div class="card-deck text-center">
         <div class="card">
-            <div class="card-body">
+            <div class="card-body position-relative">
                 <h5 class="card-title font-weight-normal">Transport Helium (L)</h5>
                 <h3 class="card-text font-weight-normal"><span id="he-transport">Loading...</span></h3>
+
+                <div class="position-absolute" style="left: 85%; top:0;">
+                    <!-- d-none by default -->
+
+                    <div class="d-none d-inline" id="stale-devices-wrapper">
+                        <div class="dropdown d-inline">
+                            <button title="View devices with stale values" class="btn btn-link p-1 m-0" type="button" 
+                            id="dropdownStaleDevices" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="bi bi-exclamation-triangle text-warning"></i>
+                            </button>
+                        
+                            <ul class="dropdown-menu allow-focus warning-dd-menu" id="stale-devices-dd-menu" aria-labelledby="dropdownStaleDevices"
+                            style="max-height: 300px; max-width: 400px; overflow-y: auto;">
+                            <!-- populated by card warnings js -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="d-none d-inline" id="no-value-devices-wrapper">
+                        <div class="dropdown d-inline">
+                            <button title="View devices with missing values" class="btn btn-link p-1 m-0" type="button" 
+                            id="dropdownMissingValueDevices" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="bi bi-exclamation-octagon text-danger"></i>
+                            </button>
+                        
+                            <ul class="dropdown-menu allow-focus warning-dd-menu" id="no-value-devices-dd-menu" aria-labelledby="dropdownMissingValueDevices"
+                            style="max-height: 300px; max-width: 400px; overflow-y: auto;">
+                            <!-- populated by card warnings js -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card">
@@ -77,7 +110,7 @@
             <tr>
                 <th scope="col">Object ID</th>
                 <th scope="col">Coordinator Name</th>
-                <th scope="col">Total Helium</th>
+                <th scope="col">Total Helium (L)</th>
                 <th scope="col">Connected Devices</th>
             </tr>
         </thead>

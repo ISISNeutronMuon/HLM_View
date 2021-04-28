@@ -19,6 +19,22 @@
 }
 
 /* Building */
+.warning-dd-menu li {
+    display: block;
+    padding: 3px 10px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+    margin:0;
+    transition: background-color .4s ease;
+}
+
+.warning-dd-menu li:hover,
+.warning-dd-menu li:focus {
+    background-color: #f5f5f5;
+}
 
 
 /* Measurements */
