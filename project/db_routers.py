@@ -3,7 +3,7 @@ class HeliumDbRouter:
     Custom router to control database operations on models in the HLM view app.
     """
 
-    route_app_labels = {'HLM_view'}
+    route_app_labels = {'hlmview'}
 
     def db_for_read(self, model, **hints):
         """
