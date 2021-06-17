@@ -5,6 +5,8 @@ from django.views.decorators.http import require_http_methods
 from .utils import ObjectTypeID, DisplayGroupID, ObjectID, get_building_data, get_devices_data, prepare_objects_data, \
 hps_objects, fetch_r108_data
 
+GRAFANA_HOST = 'localhost'
+
 buildings_config = [
         {
             "id": "R55",
@@ -107,7 +109,8 @@ def detail(request, object_id=None):
         'is_sld': object_.ob_objecttype_id == ObjectTypeID.SLD.value,
         'assigned_object': assigned_object,
         'devices_data': devices_data,
-        'mea_types': mea_types
+        'mea_types': mea_types,
+        'grafana_host': GRAFANA_HOST
     }
 
     return render(request, 'details.html', context)
@@ -128,7 +131,10 @@ def building(request, building):
 
     building_configuration = next((x for x in buildings_config if x['id'] == building), None)
 
-    context = {"building": building_configuration}
+    context = {
+        "building": building_configuration,
+        "grafana_host": GRAFANA_HOST
+    }
 
     # If builing has custom content, render its custom view (which extends the default building view)
     if building_configuration.get('custom_view', None):
