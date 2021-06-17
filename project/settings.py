@@ -29,6 +29,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+INTERNAL_IPS = ['127.0.0.1']
+
 
 # Application definition
 
@@ -39,11 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'hlmview.apps.HlmViewConfig'
+    'hlmview.apps.HlmViewConfig',
+    'debug_toolbar'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -88,6 +92,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'helium',
         'HOST': 'NDAHEMON',
+        'CONN_MAX_AGE': 180,
         'PORT': 3306,
         'USER': 'report',
         'PASSWORD': '$report'

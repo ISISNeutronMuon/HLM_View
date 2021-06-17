@@ -87,6 +87,9 @@ class GamMeasurement(models.Model):
     class Meta:
         managed = False
         db_table = 'gam_measurement'
+        indexes = [
+            models.Index(fields=['mea_object_id'])
+        ]
 
 
 class GamNetwork(models.Model):
@@ -159,6 +162,9 @@ class GamObject(models.Model):
     class Meta:
         managed = False
         db_table = 'gam_object'
+        indexes = [
+            models.Index(fields=['ob_objecttype_id'])
+        ]
 
 
 class GamObjectclass(models.Model):
@@ -203,6 +209,9 @@ class GamObjectrelation(models.Model):
     class Meta:
         managed = False
         db_table = 'gam_objectrelation'
+        indexes = [
+            models.Index(fields=['or_date_removal', 'or_object'])
+        ]
 
 
 class GamObjecttype(models.Model):

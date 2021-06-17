@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
-from django.http import HttpResponse, JsonResponse, Http404
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, Http404
 from .models import GamObject, GamMeasurement, GamObjecttype, GamObjectclass, GamDisplaygroup, GamObjectrelation
 from django.views.decorators.http import require_http_methods
-from .utils import ObjectTypeID, DisplayGroupID, ObjectClassID, ObjectID, dg_purity_objects, get_building_data, \
-get_devices_data, prepare_objects_data, hps_objects, fetch_r108_data
+from .utils import ObjectTypeID, DisplayGroupID, ObjectID, get_building_data, get_devices_data, prepare_objects_data, \
+hps_objects, fetch_r108_data
 
 buildings_config = [
         {

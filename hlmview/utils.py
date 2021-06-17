@@ -1,7 +1,7 @@
-from .models import GamObject, GamMeasurement, GamObjecttype, GamObjectclass, GamDisplaygroup, GamObjectrelation
+from .models import GamObject, GamMeasurement, GamObjectrelation
 from enum import Enum
 from django.utils import timezone
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 NO_HELIUM = "N/A"
 STALE_AGE_HOURS = 12
@@ -79,10 +79,6 @@ hps_objects = [
 ]
 
 def fetch_r108_data():
-    MCPs = GamObject.objects.filter(ob_objecttype_id=ObjectTypeID.PRESSURE_SENSOR.value, 
-                                        ob_endofoperation=None, 
-                                        ob_displaygroup_id=DisplayGroupID.R108.value)
-
     data = {
         "cb-turbine-100": GamMeasurement.objects.filter(mea_object=ObjectID.CB_TURBINE_100.value).last().mea_value1,
         "cb-turbine-101": GamMeasurement.objects.filter(mea_object=ObjectID.CB_TURBINE_101.value).last().mea_value1,
@@ -174,7 +170,7 @@ def get_coordinators_data(building_display_id):
             "id": coord.ob_id,
             "name": coord.ob_name,
             "he_total": 0,
-            "devices": get_devices_data(coordinator_id=coord.ob_id),
+            "devices": get_devices_data(coordinator=coord),
             "warnings": {
                 "stale_devices": [],
                 "no_value_devices": []
@@ -188,8 +184,8 @@ def get_coordinators_data(building_display_id):
 
     return coordinators
 
-def get_devices_data(coordinator_id):
-    relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id=coordinator_id).order_by('-or_date_assignment')
+def get_devices_data(coordinator):
+    relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object=coordinator).order_by('-or_date_assignment')
     devices = []
 
     for rel in relations:
