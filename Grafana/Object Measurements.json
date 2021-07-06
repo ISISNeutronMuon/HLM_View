@@ -2333,7 +2333,7 @@
           }
         ],
         "query": "SELECT OC_MEASURETYPE1 as __value FROM helium.gam_objectclass WHERE OC_ID = $obj_class",
-        "refresh": 0,
+        "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -2423,7 +2423,7 @@
           }
         ],
         "query": "SELECT OC_MEASURETYPE4 as __value FROM helium.gam_objectclass WHERE OC_ID = $obj_class",
-        "refresh": 0,
+        "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
