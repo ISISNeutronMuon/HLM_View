@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, Http404
+import urllib
 from .models import GamObject, GamMeasurement, GamObjecttype, GamObjectclass, GamDisplaygroup, GamObjectrelation
 from django.views.decorators.http import require_http_methods
 from .utils import ObjectTypeID, DisplayGroupID, ObjectID, get_building_data, get_devices_data, prepare_objects_data, \
@@ -53,7 +54,24 @@ buildings_config = [
         }
 ]
 
+
 # Create your views here.
+def search_results(request, encoded_dict):
+    search_results = urllib.parse.parse_qs(encoded_dict)
+    results = []
+
+    print(search_results)
+    for key, value in search_results.items():
+        current = {}
+        object_ = GamObject.objects.get(ob_id=value[0])
+        current["url"] = "details/{}".format(value[0])
+        current["name"] = object_.ob_name
+        current["id"] = value[0]
+        results.append(current)
+
+    return render(request, 'search_results.html', {"results": results})
+
+
 def index(request):
     context = {
         "buildings": buildings_config
@@ -118,11 +136,19 @@ def detail(request, object_id=None):
 def object_search(request):
     object_name_query = request.GET.get('q')
     try:
-        object_ = GamObject.objects.get(ob_name=object_name_query)
+        object_ = GamObject.objects.filter(ob_name=object_name_query)
     except GamObject.DoesNotExist:
         raise Http404(f'Found no object(s) with name "{object_name_query}".')
-
-    object_id = object_.ob_id
+    print(object_)
+    if len(object_) > 1:
+        results_dict = {}
+        count = 1
+        for item in object_:
+            results_dict["search_results{}".format(count)] = item.ob_id
+            count += 1
+        encoded_dict = urllib.parse.urlencode(results_dict)
+        return redirect(search_results, encoded_dict=encoded_dict)
+    object_id = object_[0].ob_id
     return redirect(detail, object_id=object_id)
     
 def building(request, building):

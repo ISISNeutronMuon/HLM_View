@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+   - Search results for: {{results.0.name}}
+{% endblock %}
+
+{% block content %}
+<h2>Search results for: {{results.0.name}}</h2>
+
+<ol>
+{% for result in results %}
+    <li> <a href = "{% url 'detail' result.id %}"> Name: {{ result.name }}  ID:  {{result.id}} </a></li>
+{% endfor %}
+</ol>
+{{ exception }}
+
+{% endblock %}
