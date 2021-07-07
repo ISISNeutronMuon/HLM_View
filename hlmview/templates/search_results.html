@@ -6,16 +6,12 @@
 
 {% block content %}
 
-<style>
-    h2 {margin: 10px;}
-    ol {margin-left: 70px;}
-</style>
-<h2>Search results for: {{results.0.name}}</h2>
-<ol>
+<h2 class="font-weight-light mx-5 mb-3 mt-5 text-center">Search results for: {{results.0.name}}</h2>
+<div class="list-group">
 {% for result in results %}
-    <li> <a href = "{% url 'detail' result.id %}"> Name: {{ result.name }}  ID:  {{result.id}} </a></li>
+    <a href = "{% url 'detail' result.id %}" class="list-group-item"> Name: {{ result.name }}  ID:  {{result.id}} </a>
 {% endfor %}
-</ol>
+</div>
 {{ exception }}
 
 {% endblock %}
