@@ -5,8 +5,12 @@
 {% endblock %}
 
 {% block content %}
-<h2>Search results for: {{results.0.name}}</h2>
 
+<style>
+    h2 {margin: 10px;}
+    ol {margin-left: 70px;}
+</style>
+<h2>Search results for: {{results.0.name}}</h2>
 <ol>
 {% for result in results %}
     <li> <a href = "{% url 'detail' result.id %}"> Name: {{ result.name }}  ID:  {{result.id}} </a></li>
