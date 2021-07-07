@@ -162,6 +162,8 @@ Thumbs.db #thumbnail cache on Windows
 # profiling data
 .prof
 
+### pycharm ###
+.idea/*
 
 ### vscode ###
 .vscode/*
