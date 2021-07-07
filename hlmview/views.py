@@ -135,9 +135,8 @@ def detail(request, object_id=None):
 
 def object_search(request):
     object_name_query = request.GET.get('q')
-    try:
-        object_ = GamObject.objects.filter(ob_name=object_name_query)
-    except GamObject.DoesNotExist:
+    object_ = GamObject.objects.filter(ob_name=object_name_query)
+    if not object_:
         raise Http404(f'Found no object(s) with name "{object_name_query}".')
     print(object_)
     if len(object_) > 1:
