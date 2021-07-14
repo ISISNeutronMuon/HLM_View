@@ -56,22 +56,6 @@ buildings_config = [
 
 
 # Create your views here.
-def search_results(request, encoded_dict):
-    search_results = urllib.parse.parse_qs(encoded_dict)
-    results = []
-
-    print(search_results)
-    for key, value in search_results.items():
-        current = {}
-        object_ = GamObject.objects.get(ob_id=value[0])
-        current["url"] = "details/{}".format(value[0])
-        current["name"] = object_.ob_name
-        current["id"] = value[0]
-        results.append(current)
-
-    return render(request, 'search_results.html', {"results": results})
-
-
 def index(request):
     context = {
         "buildings": buildings_config
@@ -133,12 +117,27 @@ def detail(request, object_id=None):
 
     return render(request, 'details.html', context)
 
+def search_results(request, encoded_dict):
+    search_results = urllib.parse.parse_qs(encoded_dict)
+    results = []
+
+    for key, value in search_results.items():
+        current = {}
+        object_ = GamObject.objects.get(ob_id=value[0])
+        current["url"] = "details/{}".format(value[0])
+        current["name"] = object_.ob_name
+        current["id"] = value[0]
+        results.append(current)
+
+    return render(request, 'search_results.html', {"results": results})
+
 def object_search(request):
     object_name_query = request.GET.get('q')
     object_ = GamObject.objects.filter(ob_name=object_name_query)
+
     if not object_:
         raise Http404(f'Found no object(s) with name "{object_name_query}".')
-    print(object_)
+
     if len(object_) > 1:
         results_dict = {}
         count = 1
@@ -147,6 +146,7 @@ def object_search(request):
             count += 1
         encoded_dict = urllib.parse.urlencode(results_dict)
         return redirect(search_results, encoded_dict=encoded_dict)
+
     object_id = object_[0].ob_id
     return redirect(detail, object_id=object_id)
     
