@@ -223,6 +223,16 @@ def get_devices_data(coordinator):
 
 
 def get_object_module(object_id: int, object_class: int = None):
+    """
+    Get the module of the object with the given ID.
+
+    Args:
+        object_id (int): The object ID whose relations to check for the module.
+        object_class (int, optional): The object's class ID, if None it will be queried.
+
+    Returns:
+        (GamObject): The module object, None if not found.
+    """
     if object_class is None:
         obj = GamObject.get_or_none(GamObject.ob_id == object_id)
         if obj is None:
@@ -238,16 +248,6 @@ def get_object_module(object_id: int, object_class: int = None):
 
 
 def _get_module_object(object_id: int, module_type: int):
-    """
-    Get the module with the given type of the object with the given ID.
-
-    Args:
-        object_id (int): The object ID whose relations to check.
-        module_type (int): The type of the module to find in relations.
-
-    Returns:
-        (GamObject): The module object.
-    """
     obj_relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id=object_id).order_by('-or_date_assignment')
     module = next((rel.or_object_id_assigned for rel in obj_relations if rel.or_object_id_assigned.ob_objecttype_id == module_type), None)
     return module
