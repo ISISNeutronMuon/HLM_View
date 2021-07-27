@@ -4,7 +4,7 @@ import urllib
 from .models import GamObject, GamMeasurement, GamObjecttype, GamObjectclass, GamDisplaygroup, GamObjectrelation
 from django.views.decorators.http import require_http_methods
 from .utils import ObjectTypeID, DisplayGroupID, ObjectID, get_building_data, get_devices_data, prepare_objects_data, \
-hps_objects, fetch_r108_data
+hps_objects, fetch_r108_data, get_object_module
 
 GRAFANA_HOST = 'localhost'
 
@@ -75,7 +75,7 @@ def detail(request, object_id=None):
     except GamObject.DoesNotExist:
         raise Http404(f"Object with ID {object_id} does not exist.")
 
-    sld = None
+    object_module = None
     assigned_object = None
     devices_data = None
     obj_relations_assigned = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id_assigned=object_.ob_id).order_by('-or_date_assignment')
@@ -84,16 +84,15 @@ def detail(request, object_id=None):
     if object_.ob_objecttype_id == ObjectTypeID.Coordinator.value:
         devices_data = get_devices_data(object_.ob_id)
     else:
-        # If object is a SLD, find assigned object. If not, search if object has a SLD.
-        if object_.ob_objecttype_id == ObjectTypeID.SLD.value:
+        # If object IS a module, find assigned object. If not, search if object has a module.
+        if object_.ob_objecttype_id in [ObjectTypeID.SLD.value, ObjectTypeID.GCM.value]:
             assigned_object = next((rel.or_object for rel in obj_relations_assigned), None)
         else:
-            obj_relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id=object_.ob_id).order_by('-or_date_assignment')
-            sld = next((rel.or_object_id_assigned for rel in obj_relations if rel.or_object_id_assigned.ob_objecttype_id == ObjectTypeID.SLD.value), None)
+            object_module = get_object_module(object_.ob_id, object_.ob_objecttype.ot_objectclass.oc_id)
 
-    # ID of object whose measurements to display (for Software Level Devices
+    # ID of object whose measurements to display (for Object Modules, e.g. SLDs/GCMs etc.
     # which store the measurements of objects)
-    meas_obj = sld if sld else object_
+    meas_obj = object_module if object_module else object_
 
     obj_class = meas_obj.ob_objecttype.ot_objectclass
     mea_types = [obj_class.oc_measuretype1, obj_class.oc_measuretype2, obj_class.oc_measuretype3, obj_class.oc_measuretype4, obj_class.oc_measuretype5]
@@ -107,8 +106,8 @@ def detail(request, object_id=None):
         'object': object_,
         'coordinator': obj_coordinator,
         'meas_obj': meas_obj,  
-        'sld': sld,
-        'is_sld': object_.ob_objecttype_id == ObjectTypeID.SLD.value,
+        'module': object_module,
+        'is_module': object_.ob_objecttype_id in [ObjectTypeID.SLD.value, ObjectTypeID.GCM.value],
         'assigned_object': assigned_object,
         'devices_data': devices_data,
         'mea_types': mea_types,

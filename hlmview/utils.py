@@ -8,6 +8,7 @@ STALE_AGE_HOURS = 12
 INVALID_VALUE = -1.000  # default value if object has no volume for conversion from fill % to litres
 
 class ObjectTypeID(Enum):
+    GCM = 16  # gas counter module
     SLD = 18  # software level device obj. type id is 18
     Coordinator = 1
     OxygenLevel = 22  # Oxygen Level = Type & Class ID 22
@@ -16,8 +17,12 @@ class ObjectTypeID(Enum):
 
 
 class ObjectClassID(Enum):
+    GAS_COUNTER_MODULE = 16
     HeLevelModule = 17  # helium level module
     LEVELMETER = 13
+    VESSEL = 2
+    CRYOSTAT = 4
+    GAS_COUNTER = 7
 
 
 class DisplayGroupID(Enum):
@@ -154,7 +159,9 @@ def get_building_data(display_group_id):
         building_data["oxygen"] = oxygen_level
 
     if display_group_id in dg_purity_objects:
-        building_data["purity"] = GamMeasurement.objects.filter(mea_object=dg_purity_objects[display_group_id]).last().mea_value2
+        purity_obj = GamMeasurement.objects.filter(mea_object=dg_purity_objects[display_group_id]).last()
+        if purity_obj:
+            building_data["purity"] = purity_obj.mea_value2
 
     return building_data
 
@@ -213,3 +220,34 @@ def get_devices_data(coordinator):
             devices.append(device_data)
     
     return devices
+
+
+def get_object_module(object_id: int, object_class: int = None):
+    """
+    Get the module of the object with the given ID.
+
+    Args:
+        object_id (int): The object ID whose relations to check for the module.
+        object_class (int, optional): The object's class ID, if None it will be queried.
+
+    Returns:
+        (GamObject): The module object, None if not found.
+    """
+    if object_class is None:
+        obj = GamObject.get_or_none(GamObject.ob_id == object_id)
+        if obj is None:
+            return None
+        object_class = obj.ob_objecttype.ot_objectclass.oc_name
+    if object_class in [ObjectClassID.VESSEL.value, ObjectClassID.CRYOSTAT.value]:
+        return _get_module_object(object_id, ObjectTypeID.SLD.value)
+    elif object_class == ObjectClassID.GAS_COUNTER.value:
+        return _get_module_object(object_id, ObjectTypeID.GCM.value)
+    else:
+        return None
+
+
+
+def _get_module_object(object_id: int, module_type: int):
+    obj_relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object_id=object_id).order_by('-or_date_assignment')
+    module = next((rel.or_object_id_assigned for rel in obj_relations if rel.or_object_id_assigned.ob_objecttype_id == module_type), None)
+    return module

@@ -100,7 +100,7 @@
                     <td>{{object.ob_displaygroup.dg_name}}</td>
                 </tr>
                 <tr>
-                    {% if is_sld %}
+                    {% if is_module %}
                         <th scope="row">Assigned Object</th>
                         {% if assigned_object is not None %}
                             <td><a href="{% url 'detail' object_id=assigned_object.ob_id %}">{{assigned_object.ob_name}}</a> ({{assigned_object.ob_id}})</td>
@@ -108,9 +108,9 @@
                             <td>None</td>
                         {% endif %}
                     {% else %}
-                        <th scope="row">Software Level Device</th>
-                        {% if sld is not None %}
-                            <td><a href="{% url 'detail' object_id=sld.ob_id %}">{{sld.ob_name}}</a> ({{sld.ob_id}})</td>
+                        <th scope="row">Object Module</th>
+                        {% if module is not None %}
+                            <td><a href="{% url 'detail' object_id=module.ob_id %}">{{module.ob_name}}</a> ({{module.ob_id}})</td>
                         {% else %}
                             <td>None</td>
                         {% endif %}
@@ -176,7 +176,13 @@
 
         <hr> <br>
 
-        <h3>Measurements</h3>
+        <div class="d-flex">
+            <h3>Measurements</h3>
+            {% if module is not None %}
+                <h5 class="ml-auto mb-0">Displaying measurements of module <a href="{% url 'detail' object_id=module.ob_id %}">{{module.ob_name}}</a></h5>
+            {% endif %}
+            
+        </div>
         <table class="table table-bordered table-hover table-sm" id="measurements-table">
             <thead>
                 <tr>
