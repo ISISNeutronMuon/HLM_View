@@ -7,6 +7,7 @@ NO_HELIUM = "N/A"
 STALE_AGE_HOURS = 12
 INVALID_VALUE = -1.000  # default value if object has no volume for conversion from fill % to litres
 
+
 class ObjectTypeID(Enum):
     GCM = 16  # gas counter module
     SLD = 18  # software level device obj. type id is 18
@@ -83,6 +84,7 @@ hps_objects = [
     94,  # DLS Main Helium Purity
 ]
 
+
 def fetch_r108_data():
     data = {
         "cb-turbine-100": GamMeasurement.objects.filter(mea_object=ObjectID.CB_TURBINE_100.value).last().mea_value1,
@@ -95,22 +97,72 @@ def fetch_r108_data():
         "main-he-purity": GamMeasurement.objects.filter(mea_object=ObjectID.MAIN_HE_PURITY.value).last().mea_value2,
         "mcp-inventory": GamMeasurement.objects.filter(mea_object=ObjectID.R108_MCP_INVENTORY.value).last().mea_value5,
         "balloon": {
-            "mbar": None,   # TODO: PV needs to be implemented in the IOC
-            "l": None       # TODO: Volume is 22^3
+            "mbar": None,  # TODO: PV needs to be implemented in the IOC
+            "l": None  # TODO: Volume is 22^3
         }
     }
 
-    data["helium-no-transport"] = sum([x for x in [data["mcp-inventory"], data["mother-dewar"]["l"], data["balloon"]["l"]] if x is not None])
+    data["helium-no-transport"] = sum(
+        [x for x in [data["mcp-inventory"], data["mother-dewar"]["l"], data["balloon"]["l"]] if x is not None])
 
     R108_coordinators_data = get_building_data(DisplayGroupID.R108.value)
-    data["total-helium"] = sum([x for x in [data["helium-no-transport"], R108_coordinators_data["he_total"]] if x is not None])
+    data["total-helium"] = sum(
+        [x for x in [data["helium-no-transport"], R108_coordinators_data["he_total"]] if x is not None])
 
     return data
+
+
+def get_previous_measurement(hour, object_id):
+    measurement = GamMeasurement.objects.filter(mea_object=object_id)
+    last_mea = measurement.last()
+    previous_mea = None
+    if last_mea is not None and last_mea.mea_date is not None:
+        previous_mea_date = last_mea.mea_date - timedelta(days=1)
+        previous_mea_date = previous_mea_date.replace(hour=hour, minute=0, second=0)
+        measurement = measurement.filter(mea_date__lte=previous_mea_date)
+        previous_mea = measurement.last()
+    return last_mea, previous_mea
+
+
+def calculate_differences(current_measurement, previous):
+    if current_measurement is not None and previous is not None:
+        diff = current_measurement - previous
+        if previous == 0:
+            if current_measurement == 0:
+                percentage_diff = 0
+            else:
+                percentage_diff = "N/A"
+        else:
+            if previous < 0 < current_measurement:
+                percentage_diff = abs(current_measurement - previous)
+                previous = abs(previous)
+            else:
+                percentage_diff = (abs(current_measurement) - abs(previous))
+            percentage_diff = percentage_diff / previous * 100
+            # abs of values to avoid increasing a negative value having a negative percent change
+    else:
+        return None
+
+    if percentage_diff != "N/A":
+        operator = ""
+
+        if percentage_diff >= 0:
+            percentage_diff = abs(percentage_diff)  # handle -0
+            operator = "+"
+        percentage_diff = f"{operator}{percentage_diff:.2f}%"
+    if diff is not None:
+        if diff >= 0:
+            operator = "+"
+        diff = f"{percentage_diff}\t{operator}{diff:.2f}"
+    else:
+        diff = percentage_diff
+    return diff
+
 
 def prepare_objects_data(objects):
     data = []
     for obj in objects:
-        last_mea = GamMeasurement.objects.filter(mea_object=obj.ob_id).last()
+        last_mea, previous_mea = get_previous_measurement(8, obj.ob_id)
         obj_data = {
             'ob_id': obj.ob_id,
             'ob_name': obj.ob_name,
@@ -118,24 +170,46 @@ def prepare_objects_data(objects):
             'ob_type_name': obj.ob_objecttype.ot_name,
             'ob_comment': obj.ob_comment,
             'ob_class_name': obj.ob_objecttype.ot_objectclass.oc_name,
-            'mea_values': [
-                last_mea.mea_value1 if last_mea else None,
-                last_mea.mea_value2 if last_mea else None,
-                last_mea.mea_value3 if last_mea else None,
-                last_mea.mea_value4 if last_mea else None,
-                last_mea.mea_value5 if last_mea else None
-            ],
+            'mea_values': [None, None, None, None, None],
             'mea_date': last_mea.mea_date if last_mea else None,
             'dg_name': obj.ob_displaygroup.dg_name if obj.ob_displaygroup else None,
-            'ob_posinformation': obj.ob_posinformation,
-        }   
+            'ob_posinformation': obj.ob_posinformation
+        }
+        if last_mea is not None:
+            obj_data['mea_values'] = [
+                last_mea.mea_value1,
+                last_mea.mea_value2,
+                last_mea.mea_value3,
+                last_mea.mea_value4,
+                last_mea.mea_value5
+            ]
+            if previous_mea is not None:
+                temp_list = []
+                previous_list = [
+                    previous_mea.mea_value1,
+                    previous_mea.mea_value2,
+                    previous_mea.mea_value3,
+                    previous_mea.mea_value4,
+                    previous_mea.mea_value5
+                ]
+                for i in range(5):
+
+                    current_measurement = obj_data['mea_values'][i]
+                    previous = previous_list[i]
+                    diff = calculate_differences(current_measurement, previous)
+                    if diff is None:
+                        temp_list.append(f"{current_measurement}")
+                    else:
+                        temp_list.append(f"{current_measurement}\t{diff}")
+                obj_data['mea_values'] = temp_list
         data.append(obj_data)
 
     return data
 
+
 def get_building_data(display_group_id):
     building_data = {
-        "he_total": 0, 
+        "he_total": 0,
         "oxygen": "N/A",
         "purity": "N/A",
         "coordinators": get_coordinators_data(building_display_id=display_group_id),
@@ -146,15 +220,19 @@ def get_building_data(display_group_id):
     }
 
     building_data["he_total"] = sum([x["he_total"] for x in building_data["coordinators"]])
-    building_data["warnings"]["stale_devices"] = [x["warnings"]["stale_devices"] for x in building_data["coordinators"] if len(x["warnings"]["stale_devices"]) > 0]
-    building_data["warnings"]["no_value_devices"] = [x["warnings"]["no_value_devices"] for x in building_data["coordinators"] if len(x["warnings"]["no_value_devices"]) > 0]
+    building_data["warnings"]["stale_devices"] = [x["warnings"]["stale_devices"] for x in building_data["coordinators"]
+                                                  if len(x["warnings"]["stale_devices"]) > 0]
+    building_data["warnings"]["no_value_devices"] = [x["warnings"]["no_value_devices"] for x in
+                                                     building_data["coordinators"] if
+                                                     len(x["warnings"]["no_value_devices"]) > 0]
 
     building_oxygen_levels = GamObject.objects.filter(
-        ob_objecttype_id=ObjectTypeID.OxygenLevel.value, 
+        ob_objecttype_id=ObjectTypeID.OxygenLevel.value,
         ob_displaygroup_id=display_group_id
     )
     if building_oxygen_levels:
-        oxygen_level_meas = [GamMeasurement.objects.filter(mea_object=obj.ob_id).last() for obj in building_oxygen_levels]
+        oxygen_level_meas = [GamMeasurement.objects.filter(mea_object=obj.ob_id).last() for obj in
+                             building_oxygen_levels]
         oxygen_level = sum([mea.mea_value1 for mea in oxygen_level_meas])
         building_data["oxygen"] = oxygen_level
 
@@ -165,10 +243,11 @@ def get_building_data(display_group_id):
 
     return building_data
 
+
 def get_coordinators_data(building_display_id):
     building_coordinators = GamObject.objects.filter(
         ob_objecttype_id=ObjectTypeID.Coordinator.value,
-        ob_endofoperation=None, 
+        ob_endofoperation=None,
         ob_displaygroup_id=building_display_id
     )
     coordinators = []
@@ -183,21 +262,27 @@ def get_coordinators_data(building_display_id):
                 "no_value_devices": []
             }
         }
-        coordinator_data["he_total"] = sum([x["he_value"] for x in coordinator_data["devices"] if x["he_value"] and x["he_value"] != NO_HELIUM])
-        coordinator_data["warnings"]["stale_devices"] = [x["name"] for x in coordinator_data["devices"] if x["warnings"]["is_stale"] is True]
-        coordinator_data["warnings"]["no_value_devices"] = [x["name"] for x in coordinator_data["devices"] if x["warnings"]["no_value"] is True]
+        coordinator_data["he_total"] = sum(
+            [x["he_value"] for x in coordinator_data["devices"] if x["he_value"] and x["he_value"] != NO_HELIUM])
+        coordinator_data["warnings"]["stale_devices"] = [x["name"] for x in coordinator_data["devices"] if
+                                                         x["warnings"]["is_stale"] is True]
+        coordinator_data["warnings"]["no_value_devices"] = [x["name"] for x in coordinator_data["devices"] if
+                                                            x["warnings"]["no_value"] is True]
 
         coordinators.append(coordinator_data)
 
     return coordinators
 
+
 def get_devices_data(coordinator):
-    relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object=coordinator).order_by('-or_date_assignment')
+    relations = GamObjectrelation.objects.filter(or_date_removal=None, or_object=coordinator).order_by(
+        '-or_date_assignment')
     devices = []
 
     for rel in relations:
         device = rel.or_object_id_assigned
-        if device.ob_objecttype.ot_objectclass_id in [ObjectClassID.HeLevelModule.value, ObjectClassID.LEVELMETER.value]:
+        if device.ob_objecttype.ot_objectclass_id in [ObjectClassID.HeLevelModule.value,
+                                                      ObjectClassID.LEVELMETER.value]:
             last_mea = GamMeasurement.objects.filter(mea_object=device.ob_id).last()
 
             he_value = last_mea.mea_value5 if last_mea.mea_value5 and last_mea.mea_value5 != INVALID_VALUE else NO_HELIUM
@@ -218,7 +303,7 @@ def get_devices_data(coordinator):
             }
 
             devices.append(device_data)
-    
+
     return devices
 
 
