@@ -13,6 +13,8 @@ urlpatterns = [
     path('high-pressure-system/', views.high_pressure_system, name='high_pressure_system'),
     path('objectnames/', views.get_object_names, name='object_names'),
     path('objects_table_data/', views.get_objects_table_data, name='objects_table_data'),
+    path('object_measurements_change/<int:object_id>/<int:hour>', views.get_object_measurements_change,
+         name='object_measurements_change'),
     path('measurement_types/', views.get_measurement_types, name='measurement_types'),
     path('display_groups/', views.get_display_groups, name='display_groups'),
     path('object_classes/', views.get_object_classes, name='object_classes'),

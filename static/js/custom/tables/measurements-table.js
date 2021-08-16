@@ -25,16 +25,40 @@ $(document).ready(function() {
                         targets: [7, 8, 9, 10, 11],
                         defaultContent: '',
                         render: function(data, type, row, meta) {
+                            
                             if (type == 'display') {
                                 if (!(mea_types === undefined) && !(data === null)) {
                                     // Update "meta.col - 3" if targets change
-                                    const mea_type = mea_types[row.ob_type][meta.col - 7];
-                                    data = '<span>' + (mea_type !== null ? mea_type : 'N/A') + '</span>' + data;
+                                    const mea_type = mea_types[row.ob_type][meta.col - 7];                                                               
+                                    if (typeof(data)==="string"){
+                                        const data_and_change = data.split("\t");
+                                        if(data_and_change[1].includes("+0.00%") ||data_and_change[1].includes("N/A")){
+                                            var font_color = "blue";
+                                            if(data_and_change[2].includes("+0.00")){
+                                                var second_font_color = "blue"
+                                            }else if (data_and_change[2].includes("+")){
+                                                second_font_color = "green"
+                                            }else{
+                                                second_font_color = "red"
+                                            }
+                                        }else if (data_and_change[1].includes("+")){
+                                             font_color = "green";
+                                             second_font_color = font_color
+                                        }else{
+                                            font_color = "red";
+                                            second_font_color = font_color
+                                        }
+                                        data = '<span>' + (mea_type !== null ? mea_type : 'N/A') + '</span>'  + data_and_change[0] + "<span style='float: right'>" +data_and_change[1].fontcolor(font_color)+"<\span>"+ "<span style='float: right'>" +data_and_change[2].fontcolor(second_font_color)+"<\span>";
+                                    } else {
+                                        data = '<span>' + (mea_type !== null ? mea_type : 'N/A') + '</span>'  + data;
+                                    }
                                 }
                             }
                             return data;
                         }
+
                     },
+
                     {
                         targets: [2, 4, 6],
                         visible: false
