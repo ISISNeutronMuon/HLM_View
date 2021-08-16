@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+    
 {% block title %}
 - {{ object.ob_name }}
 {% endblock %}
@@ -18,6 +18,47 @@
 {% block javascript %}
 <script>
     $(document).ready(function() {
+        $.ajax({
+                url: "{% url 'object_measurements_change' object_id=meas_obj.ob_id hour=8 %}",
+                type: 'GET',
+                dataType: 'application/json',
+                complete: function(data){
+                    data = JSON.parse(data.responseText)
+                    var i = 1;
+                    $.each(data, function(key, value){
+                        if(value !== null && value !== "None"){
+                            const data_and_change = value.split("\t");
+                            if(data_and_change[1].includes("+0.00%") ||data_and_change[1].includes("N/A")){
+                                var font_color = "blue";
+                                if(data_and_change[2].includes("+0.00")){
+                                    var second_font_color = "blue"
+                                }else if (data_and_change[2].includes("+")){
+                                    second_font_color = "green"
+                                }else{
+                                    second_font_color = "red"
+                                }
+                            }else if (data_and_change[1].includes("+")){
+                                font_color = "green";
+                                second_font_color = font_color
+                            }else{
+                                font_color = "red";
+                                second_font_color = font_color
+                            }
+                            data_and_change[2] = data_and_change[2].fontcolor(second_font_color)
+                            data_and_change[1] = data_and_change[1].fontcolor(font_color)
+                            console.log(value)
+                            document.getElementById("diff"+i).innerHTML = document.getElementById("diff"+i).innerHTML + "\t" + data_and_change.join("\t")
+                        }else{
+                            document.getElementById("diff"+i).style = "border-right:None"
+                        }
+                        
+                        i++
+                    })
+                }
+            })
+
+
+
         var table = $('#measurements-table').DataTable( {
             pageLength: 10,
             lengthMenu: [10, 25, 50, 100, 150, 200, 250],
@@ -76,7 +117,16 @@
 {% block content %}
     <div class="mx-5 my-3">
         <h2>{{object.ob_name}}</h2>
-        <hr> <br>
+        <hr> 
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap-typeahead.css' %}">
+        <span id="diff1" class='diffs_left'>{{mea_types.0|default:""}}</span>
+        <span id="diff2" class='diffs'>{{mea_types.1|default:""}}</span>
+        <span id="diff3" class='diffs'>{{mea_types.2|default:""}}</span>
+        <span id="diff4" class='diffs'>{{mea_types.3|default:""}}</span>
+        <span id="diff5" class='diffs_right'>{{mea_types.4|default:""}}</span>
+        <hr> 
+        <br>
         <h3>Object details</h3>
         <br>
         <table class="table table-bordered table-sm">
