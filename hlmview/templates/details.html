@@ -52,8 +52,9 @@
                             data_and_change[2] = data_and_change[2].fontcolor(second_font_color)
                             data_and_change[1] = data_and_change[1].fontcolor(font_color)
                             document.getElementById("diff"+i).innerHTML = typeArray[i-1] + "\t" + data_and_change.join("\t")
+                            document.getElementById("diff"+i).hidden = false;
                         }else{
-                            document.getElementById("diff"+i).style = "border-right:None"
+                            document.getElementById("diff"+i).hidden = true;
                         }
                         
                         i++
@@ -153,11 +154,11 @@
         </select> 
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-typeahead.css' %}">
-        <span id="diff1" class='diffs_left'>{{mea_types.0|default:""}}</span>
-        <span id="diff2" class='diffs'>{{mea_types.1|default:""}}</span>
-        <span id="diff3" class='diffs'>{{mea_types.2|default:""}}</span>
-        <span id="diff4" class='diffs'>{{mea_types.3|default:""}}</span>
-        <span id="diff5" class='diffs_right'>{{mea_types.4|default:""}}</span>
+        <span id="diff1" class='diffs_left'></span>
+        <span id="diff2" class='diffs'></span>
+        <span id="diff3" class='diffs'></span>
+        <span id="diff4" class='diffs'></span>
+        <span id="diff5" class='diffs_right'></span>
         <hr> 
         <br>
         <h3>Object details</h3>
