@@ -27,7 +27,7 @@ $(document).ready(function() {
                         render: function(data, type, row, meta) {
                             
                             if (type == 'display') {
-                                if (!(mea_types === undefined) && !(data === null)) {
+                                if (!(mea_types === undefined) && !(data === null) && !(data === "None")) {
                                     // Update "meta.col - 3" if targets change
                                     const mea_type = mea_types[row.ob_type][meta.col - 7];                                                               
                                     if (typeof(data)==="string"){
