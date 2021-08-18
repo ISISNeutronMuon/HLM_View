@@ -30,7 +30,7 @@ $(document).ready(function() {
                                 if (!(mea_types === undefined) && !(data === null) && !(data === "None")) {
                                     // Update "meta.col - 3" if targets change
                                     const mea_type = mea_types[row.ob_type][meta.col - 7];                                                               
-                                    if (typeof(data)==="string"){
+                                    if (typeof(data)==="string"&& data.includes("\t")){
                                         const data_and_change = data.split("\t");
                                         if(data_and_change[1].includes("+0.00%") ||data_and_change[1].includes("N/A")){
                                             var font_color = "blue";
