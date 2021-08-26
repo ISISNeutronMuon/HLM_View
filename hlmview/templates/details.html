@@ -30,9 +30,13 @@
                     data = JSON.parse(data.responseText);
                     var i = 1;
                     var typeArray = ["{{mea_types.0|default:""}}","{{mea_types.1|default:""}}","{{mea_types.2|default:""}}","{{mea_types.3|default:""}}","{{mea_types.4|default:""}}"];
-                    $.each(data, function(key, value){
-                        if(value !== null && value !== "None" && typeArray[i-1]!==""){
+                    var shown = 0;
+                    var diff_display  = "Comparing latest measurement " + data.mea_id1 + " ("  + data.mea_date1 + ") with measurement "+ data.mea_id2 + " (last before " + document.getElementById("times").value + " on "+  data.mea_date2+")."
+                   
+                    $.each(data.diffs, function(key, value){
+                        if(value !== null && value !== "None"){
                             const data_and_change = value.split("\t");
+                            console.log(data_and_change)
                             if(data_and_change[1].includes("+0.00%") ||data_and_change[1].includes("N/A")){
                                 var font_color = "blue";
                                 if(data_and_change[2].includes("+0.00")){
@@ -51,14 +55,33 @@
                             }
                             data_and_change[2] = data_and_change[2].fontcolor(second_font_color)
                             data_and_change[1] = data_and_change[1].fontcolor(font_color)
+                            
                             document.getElementById("diff"+i).innerHTML = typeArray[i-1] + "\t" + data_and_change.join("\t")
-                            document.getElementById("diff"+i).hidden = false;
+                            
+                            
+                                document.getElementById("diff"+i).hidden = false;
+                            
+                            shown = shown+1
+                            
                         }else{
                             document.getElementById("diff"+i).hidden = true;
                         }
-                        
+                        if (shown === 0){
+                            document.getElementById("times").hidden = true;
+                            document.getElementById("timesLabel").hidden = true;
+                            document.getElementById("diff display").hidden = true;
+                        }else{
+                            document.getElementById("times").hidden = false;
+                            document.getElementById("timesLabel").hidden = false;
+                            document.getElementById("diff display").hidden = false;
+                            document.getElementById("diff display").innerHTML = diff_display;
+                            
+                        }
                         i++
                     })
+
+                    
+
                 }
             })
     }
@@ -125,7 +148,7 @@
     <div class="mx-5 my-3">
         <h2>{{object.ob_name}}</h2>
         <hr> 
-        <label for="times">Change time for comparison:</label>
+        <label for="times" id="timesLabel">Change time for comparison:</label>
             <select name="times" id="times" onchange="changeTime(this.value);">
                 <option value="0">00:00</option>
                 <option value="1">01:00</option>
@@ -159,6 +182,7 @@
         <span id="diff3" class='diffs'></span>
         <span id="diff4" class='diffs'></span>
         <span id="diff5" class='diffs_right'></span>
+        <div id="diff display" style="font-size:small; color:gray;"></div>
         <hr> 
         <br>
         <h3>Object details</h3>

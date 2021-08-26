@@ -27,7 +27,10 @@ $(document).ready(function() {
                         render: function(data, type, row, meta) {
                             
                             if (type == 'display') {
-                                if (!(mea_types === undefined) && !(data === null) && !(data === "None")) {
+                                if (data === "None"){
+                                    return null
+                                }
+                                if (!(mea_types === undefined) && !(data === null) ) {
                                     // Update "meta.col - 3" if targets change
                                     const mea_type = mea_types[row.ob_type][meta.col - 7];                                                               
                                     if (typeof(data)==="string"&& data.includes("\t")){
@@ -48,7 +51,7 @@ $(document).ready(function() {
                                             font_color = "red";
                                             second_font_color = font_color
                                         }
-                                        data = '<span>' + (mea_type !== null ? mea_type : 'N/A') + '</span>'  + data_and_change[0] + "<span style='float: right'>" +data_and_change[1].fontcolor(font_color)+"<\span>"+ "<span style='float: right'>" +data_and_change[2].fontcolor(second_font_color)+"<\span>";
+                                        data = '<span>' + (mea_type !== null ? mea_type : 'N/A') + '</span>'  + data_and_change[0] + "<span style='float: right;'>" +data_and_change[1].fontcolor(font_color)+ " <span style='float: right;border-left:1px solid;  padding-left:5px; margin-left:5px'> " +data_and_change[2].fontcolor(second_font_color)+"<\span>"+"<\span>";
                                     } else {
                                         data = '<span>' + (mea_type !== null ? mea_type : 'N/A') + '</span>'  + data;
                                     }

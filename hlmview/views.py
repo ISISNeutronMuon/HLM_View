@@ -246,8 +246,10 @@ def get_object_measurements(request, object_id):
 @require_http_methods(['GET'])
 def get_object_measurements_change(request, object_id, hour=8):
     last_mea, previous_mea = get_previous_measurement(hour, object_id)
-
-    data = {
+    data = {"diffs": None,
+            "mea_date2": None,
+            "mea_date_diff" : None,}
+    data["diffs"] = {
             "mea_diff1": None,
             "mea_diff2": None,
             "mea_diff3": None,
@@ -272,10 +274,13 @@ def get_object_measurements_change(request, object_id, hour=8):
         for i in range(5):
             diff = calculate_differences(last_list[i], previous_list[i])
             if last_list[i] is None and diff is None:
-                data["mea_diff{}".format(i+1)] = None
+                data["diffs"]["mea_diff{}".format(i+1)] = None
             else:
-                data["mea_diff{}".format(i+1)] = f"{last_list[i]}\t{diff}"
-
+                data["diffs"]["mea_diff{}".format(i+1)] = f"{last_list[i]}\t{diff}"
+        data["mea_date1"] = last_mea.mea_date.date()
+        data["mea_id1"] = last_mea.mea_id
+        data["mea_date2"] = previous_mea.mea_date.date()
+        data["mea_id2"] = previous_mea.mea_id
     return JsonResponse(data, safe=False)
 
 
