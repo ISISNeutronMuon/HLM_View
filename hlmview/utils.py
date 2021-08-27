@@ -165,6 +165,11 @@ def prepare_objects_data(objects):
     data = []
     for obj in objects:
         last_mea, previous_mea = get_previous_measurement(8, obj.ob_id)
+        if previous_mea is None:
+            for i in range(1,12):
+                last_mea, previous_mea = get_previous_measurement(8+i, obj.ob_id)
+                if previous_mea is not None:
+                    break
         obj_data = {
             'ob_id': obj.ob_id,
             'ob_name': obj.ob_name,

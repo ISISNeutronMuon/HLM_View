@@ -34,6 +34,7 @@
                     var diff_display  = "Comparing latest measurement " + data.mea_id1 + " ("  + data.mea_date1 + ") with measurement "+ data.mea_id2 + " (last before " + document.getElementById("times").value + " on "+  data.mea_date2+")."
                    
                     $.each(data.diffs, function(key, value){
+                        console.log(data)
                         if(value !== null && value !== "None"){
                             const data_and_change = value.split("\t");
                             if(data_and_change[1].includes("+0.00%") ||data_and_change[1].includes("N/A")){
@@ -71,7 +72,7 @@
                             document.getElementById("timesLabel").hidden = true;
                             document.getElementById("diff display").hidden = true;
                             
-                        }else if (i ===4){
+                        }else if (i === 4){
                             document.getElementById("times").hidden = false;
                             document.getElementById("timesLabel").hidden = false;
                             document.getElementById("diff display").hidden = false;
@@ -80,6 +81,13 @@
                         }
                         i++
                     })
+                    if(document.getElementById("changesDisplay").style.display === "none" && data.mea_date1 !== "None"){
+                        document.getElementById("diff display").innerHTML = "No valid comparisons within the timeframe selected, try a different time?"
+                        document.getElementById("times").hidden = false;
+                        document.getElementById("timesLabel").hidden = false;
+                        document.getElementById("diff display").hidden = false;
+                        document.getElementById("changesDisplay").style.display = "";
+                    }
                     
 
                     

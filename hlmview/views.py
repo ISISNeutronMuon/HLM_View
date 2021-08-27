@@ -256,31 +256,33 @@ def get_object_measurements_change(request, object_id, hour=8):
             "mea_diff4": None,
             "mea_diff5": None,
            }
-    if last_mea is not None and previous_mea is not None:
-        last_list = [
-                last_mea.mea_value1,
-                last_mea.mea_value2,
-                last_mea.mea_value3,
-                last_mea.mea_value4,
-                last_mea.mea_value5
-        ]
-        previous_list = [
-                previous_mea.mea_value1,
-                previous_mea.mea_value2,
-                previous_mea.mea_value3,
-                previous_mea.mea_value4,
-                previous_mea.mea_value5
-        ]
-        for i in range(5):
-            diff = calculate_differences(last_list[i], previous_list[i])
-            if last_list[i] is None and diff is None:
-                data["diffs"]["mea_diff{}".format(i+1)] = None
-            else:
-                data["diffs"]["mea_diff{}".format(i+1)] = f"{last_list[i]}\t{diff}"
+    if last_mea is not None:
         data["mea_date1"] = last_mea.mea_date.date()
         data["mea_id1"] = last_mea.mea_id
-        data["mea_date2"] = previous_mea.mea_date.date()
-        data["mea_id2"] = previous_mea.mea_id
+        if previous_mea is not None:
+            last_list = [
+                    last_mea.mea_value1,
+                    last_mea.mea_value2,
+                    last_mea.mea_value3,
+                    last_mea.mea_value4,
+                    last_mea.mea_value5
+            ]
+            previous_list = [
+                    previous_mea.mea_value1,
+                    previous_mea.mea_value2,
+                    previous_mea.mea_value3,
+                    previous_mea.mea_value4,
+                    previous_mea.mea_value5
+            ]
+            for i in range(5):
+                diff = calculate_differences(last_list[i], previous_list[i])
+                if last_list[i] is None and diff is None:
+                    data["diffs"]["mea_diff{}".format(i+1)] = None
+                else:
+                    data["diffs"]["mea_diff{}".format(i+1)] = f"{last_list[i]}\t{diff}"
+            data["mea_date2"] = previous_mea.mea_date.date()
+            data["mea_id2"] = previous_mea.mea_id
+    
     return JsonResponse(data, safe=False)
 
 
