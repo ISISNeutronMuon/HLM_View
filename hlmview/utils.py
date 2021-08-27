@@ -119,7 +119,9 @@ def get_previous_measurement(hour, object_id):
     if last_mea is not None and last_mea.mea_date is not None:
         previous_mea_date = last_mea.mea_date - timedelta(days=1)
         previous_mea_date = previous_mea_date.replace(hour=hour, minute=0, second=0)
-        measurement = measurement.filter(mea_date__lte=previous_mea_date)
+        # add a limit to how far back we check
+        limit = previous_mea_date - timedelta(days=1)
+        measurement = measurement.filter(mea_date__gte=limit, mea_date__lte=previous_mea_date)
         previous_mea = measurement.last()
     return last_mea, previous_mea
 
