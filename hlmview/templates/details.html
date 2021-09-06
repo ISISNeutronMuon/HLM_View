@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+    
 {% block title %}
 - {{ object.ob_name }}
 {% endblock %}
@@ -16,8 +16,23 @@
 {% endblock %}
 
 {% block javascript %}
+<script type="text/javascript" src="{% static 'js/custom/object-details-utils.js' %}"></script>
+
 <script>
+    
+    var typeArray = ["{{mea_types.0|default:""}}","{{mea_types.1|default:""}}","{{mea_types.2|default:""}}","{{mea_types.3|default:""}}","{{mea_types.4|default:""}}"];
+    var url_val = "{% url 'object_measurements_change' object_id=meas_obj.ob_id hour=8 %}"
+
+    function localChangeTime(time){
+        changeTime(time, typeArray, url_val);
+    }
+    
     $(document).ready(function() {
+       
+       fillSelect()
+       document.getElementById("times").value = "8"
+       changeTime("8", typeArray, url_val)
+        
         var table = $('#measurements-table').DataTable( {
             pageLength: 10,
             lengthMenu: [10, 25, 50, 100, 150, 200, 250],
@@ -76,7 +91,21 @@
 {% block content %}
     <div class="mx-5 my-3">
         <h2>{{object.ob_name}}</h2>
-        <hr> <br>
+        <hr> 
+        <div id="changesDisplay" style="display: none">
+
+        <label for="times" id="timesLabel">Change time for comparison:</label>
+        <select name="times" id="times" onchange="localChangeTime(this.value);"></select> 
+        <span id="diff1" class='diffs_left'></span>
+        <span id="diff2" class='diffs'></span>
+        <span id="diff3" class='diffs'></span>
+        <span id="diff4" class='diffs'></span>
+        <span id="diff5" class='diffs_right'></span>
+        <div id="diff display" style="font-size:small; color:gray;"></div>
+        <hr> 
+        </div>
+        
+        <br>
         <h3>Object details</h3>
         <br>
         <table class="table table-bordered table-sm">
