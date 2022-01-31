@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+    
+{% block title %}
+
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Overview</a></li>
+      <li class="breadcrumb-item active"><a href="{% url 'measurements' %}">Measurements</a></li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/custom/graph-range-select.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="mx-5 my-3">
+        <h3>Trends</h3>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col px-0">
+                    <p class="float-left">More information and time ranges available on the
+                        <a href='http://{{grafana_host}}:3000/d/184Ng-b7z/total-oxygen-level?orgId=1&from=now-24h&to=now'>
+                            <img src="{% static 'images/grafana.svg' %}" style="height: 1em;" class="ml-1 mr-1" />Grafana Dashboard
+                        </a>
+                    </p>
+                </div>
+                <div class="col px-0">
+                    <select class="custom-select float-right trends-range" data-graph="trends-graph-1" onchange="updateGraphTimeRange(this)">
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <iframe src="http://{{grafana_host}}:3000/d/184Ng-b7z/total-oxygen-level?orgId=1&from=now-24h&to=now"
+
+        width="100%" height="350" frameborder="0" id="trends-graph-1"></iframe>
+
+
+    </div>
+{% endblock %}
