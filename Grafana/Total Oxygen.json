@@ -1,0 +1,830 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "target": {
+            "limit": 100,
+            "matchAny": false,
+            "tags": [],
+            "type": "dashboard"
+          },
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 4,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "(%)"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 15,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 12,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "hidden",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "pluginVersion": "8.3.4",
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "IUQ6I19Gz"
+            },
+            "format": "time_series",
+            "group": [],
+            "hide": true,
+            "metricColumn": "none",
+            "rawQuery": false,
+            "rawSql": "SELECT\n  MEA_DATE AS \"time\",\n  MEA_VALUE1\nFROM gam_measurement\nWHERE\n  $__timeFilter(MEA_DATE) AND\n  MEA_OBJECT_ID = 178\nORDER BY MEA_DATE",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "MEA_VALUE1"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "gam_measurement",
+            "timeColumn": "MEA_DATE",
+            "timeColumnType": "timestamp",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              },
+              {
+                "datatype": "mediumint",
+                "name": "",
+                "params": [
+                  "MEA_OBJECT_ID",
+                  "=",
+                  "178"
+                ],
+                "type": "expression"
+              }
+            ]
+          },
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "IUQ6I19Gz"
+            },
+            "format": "time_series",
+            "group": [],
+            "hide": true,
+            "metricColumn": "none",
+            "rawQuery": false,
+            "rawSql": "SELECT\n  MEA_DATE AS \"time\",\n  MEA_VALUE1\nFROM gam_measurement\nWHERE\n  $__timeFilter(MEA_DATE) AND\n  MEA_OBJECT_ID = 179\nORDER BY MEA_DATE",
+            "refId": "B",
+            "select": [
+              [
+                {
+                  "params": [
+                    "MEA_VALUE1"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "gam_measurement",
+            "timeColumn": "MEA_DATE",
+            "timeColumnType": "timestamp",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              },
+              {
+                "datatype": "mediumint",
+                "name": "",
+                "params": [
+                  "MEA_OBJECT_ID",
+                  "=",
+                  "179"
+                ],
+                "type": "expression"
+              }
+            ]
+          },
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "IUQ6I19Gz"
+            },
+            "format": "time_series",
+            "group": [],
+            "hide": true,
+            "metricColumn": "none",
+            "rawQuery": false,
+            "rawSql": "SELECT\n  MEA_DATE AS \"time\",\n  MEA_VALUE1\nFROM gam_measurement\nWHERE\n  $__timeFilter(MEA_DATE) AND\n  MEA_OBJECT_ID = 180\nORDER BY MEA_DATE",
+            "refId": "C",
+            "select": [
+              [
+                {
+                  "params": [
+                    "MEA_VALUE1"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "gam_measurement",
+            "timeColumn": "MEA_DATE",
+            "timeColumnType": "timestamp",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              },
+              {
+                "datatype": "mediumint",
+                "name": "",
+                "params": [
+                  "MEA_OBJECT_ID",
+                  "=",
+                  "180"
+                ],
+                "type": "expression"
+              }
+            ]
+          },
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "IUQ6I19Gz"
+            },
+            "format": "time_series",
+            "group": [],
+            "hide": true,
+            "metricColumn": "none",
+            "rawQuery": false,
+            "rawSql": "SELECT\n  MEA_DATE AS \"time\",\n  MEA_VALUE1\nFROM gam_measurement\nWHERE\n  $__timeFilter(MEA_DATE) AND\n  MEA_OBJECT_ID = 181\nORDER BY MEA_DATE",
+            "refId": "D",
+            "select": [
+              [
+                {
+                  "params": [
+                    "MEA_VALUE1"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "gam_measurement",
+            "timeColumn": "MEA_DATE",
+            "timeColumnType": "timestamp",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              },
+              {
+                "datatype": "mediumint",
+                "name": "",
+                "params": [
+                  "MEA_OBJECT_ID",
+                  "=",
+                  "181"
+                ],
+                "type": "expression"
+              }
+            ]
+          },
+          {
+            "datasource": {
+              "type": "__expr__",
+              "uid": "-100"
+            },
+            "downsampler": "mean",
+            "expression": "A",
+            "hide": true,
+            "refId": "E",
+            "type": "resample",
+            "upsampler": "fillna",
+            "window": "1m"
+          },
+          {
+            "datasource": {
+              "type": "__expr__",
+              "uid": "-100"
+            },
+            "downsampler": "mean",
+            "expression": "C",
+            "hide": true,
+            "refId": "F",
+            "type": "resample",
+            "upsampler": "fillna",
+            "window": "1m"
+          },
+          {
+            "datasource": {
+              "type": "__expr__",
+              "uid": "-100"
+            },
+            "downsampler": "mean",
+            "expression": "D",
+            "hide": true,
+            "refId": "G",
+            "type": "resample",
+            "upsampler": "fillna",
+            "window": "1m"
+          },
+          {
+            "datasource": {
+              "type": "__expr__",
+              "uid": "-100"
+            },
+            "downsampler": "mean",
+            "expression": "C",
+            "hide": true,
+            "refId": "H",
+            "type": "resample",
+            "upsampler": "fillna",
+            "window": "1m"
+          },
+          {
+            "datasource": {
+              "type": "__expr__",
+              "uid": "__expr__"
+            },
+            "expression": "$E+$F+$G+$H",
+            "hide": false,
+            "refId": "Total Oxygen Level",
+            "type": "math"
+          }
+        ],
+        "title": "Total Oxygen Level",
+        "transformations": [],
+        "type": "timeseries"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "graph": false,
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "(%)"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 0,
+          "y": 15
+        },
+        "id": 4,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "hidden",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "IUQ6I19Gz"
+            },
+            "format": "time_series",
+            "group": [],
+            "hide": false,
+            "metricColumn": "none",
+            "rawQuery": false,
+            "rawSql": "SELECT\n  MEA_DATE AS \"time\",\n  MEA_VALUE1\nFROM gam_measurement\nWHERE\n  $__timeFilter(MEA_DATE) AND\n  MEA_OBJECT_ID = 178\nORDER BY MEA_DATE",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "MEA_VALUE1"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "gam_measurement",
+            "timeColumn": "MEA_DATE",
+            "timeColumnType": "timestamp",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              },
+              {
+                "datatype": "mediumint",
+                "name": "",
+                "params": [
+                  "MEA_OBJECT_ID",
+                  "=",
+                  "178"
+                ],
+                "type": "expression"
+              }
+            ]
+          }
+        ],
+        "title": "TS1 North Oxygen Level",
+        "type": "timeseries"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "graph": false,
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "(%)"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 6,
+          "y": 15
+        },
+        "id": 6,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "hidden",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "IUQ6I19Gz"
+            },
+            "format": "time_series",
+            "group": [],
+            "hide": false,
+            "metricColumn": "none",
+            "rawQuery": false,
+            "rawSql": "SELECT\n  MEA_DATE AS \"time\",\n  MEA_VALUE1\nFROM gam_measurement\nWHERE\n  $__timeFilter(MEA_DATE) AND\n  MEA_OBJECT_ID = 179\nORDER BY MEA_DATE",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "MEA_VALUE1"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "gam_measurement",
+            "timeColumn": "MEA_DATE",
+            "timeColumnType": "timestamp",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              },
+              {
+                "datatype": "mediumint",
+                "name": "",
+                "params": [
+                  "MEA_OBJECT_ID",
+                  "=",
+                  "179"
+                ],
+                "type": "expression"
+              }
+            ]
+          }
+        ],
+        "title": "TS1 South Oxygen Level",
+        "type": "timeseries"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "graph": false,
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "(%)"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 12,
+          "y": 15
+        },
+        "id": 8,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "hidden",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "IUQ6I19Gz"
+            },
+            "format": "time_series",
+            "group": [],
+            "hide": false,
+            "metricColumn": "none",
+            "rawQuery": false,
+            "rawSql": "SELECT\n  MEA_DATE AS \"time\",\n  MEA_VALUE1\nFROM gam_measurement\nWHERE\n  $__timeFilter(MEA_DATE) AND\n  MEA_OBJECT_ID = 180\nORDER BY MEA_DATE",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "MEA_VALUE1"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "gam_measurement",
+            "timeColumn": "MEA_DATE",
+            "timeColumnType": "timestamp",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              },
+              {
+                "datatype": "mediumint",
+                "name": "",
+                "params": [
+                  "MEA_OBJECT_ID",
+                  "=",
+                  "180"
+                ],
+                "type": "expression"
+              }
+            ]
+          }
+        ],
+        "title": "TS2 East Oxygen Level",
+        "type": "timeseries"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "graph": false,
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 18,
+          "y": 15
+        },
+        "id": 10,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "hidden",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "IUQ6I19Gz"
+            },
+            "format": "time_series",
+            "group": [],
+            "hide": false,
+            "metricColumn": "none",
+            "rawQuery": false,
+            "rawSql": "SELECT\n  MEA_DATE AS \"time\",\n  MEA_VALUE1\nFROM gam_measurement\nWHERE\n  $__timeFilter(MEA_DATE) AND\n  MEA_OBJECT_ID = 181\nORDER BY MEA_DATE",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "MEA_VALUE1"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "gam_measurement",
+            "timeColumn": "MEA_DATE",
+            "timeColumnType": "datetime",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              },
+              {
+                "datatype": "mediumint",
+                "name": "",
+                "params": [
+                  "MEA_OBJECT_ID",
+                  "=",
+                  "181"
+                ],
+                "type": "expression"
+              }
+            ]
+          }
+        ],
+        "title": "TS2 West Oxygen Level",
+        "type": "timeseries"
+      }
+    ],
+    "refresh": "",
+    "schemaVersion": 34,
+    "style": "dark",
+    "tags": [
+      "object",
+      "measurements"
+    ],
+    "templating": {
+      "list": []
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Total Oxygen Level",
+    "uid": "184Ng-b7z",
+    "version": 14,
+    "weekStart": ""
+  }
