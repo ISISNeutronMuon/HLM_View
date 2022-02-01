@@ -13,9 +13,24 @@ $(document).ready(function() {
     }
 })
 
-function updateGraphTimeRange(selection) {
-    var graph = $("iframe#" + $(selection).data("graph"));
+function GraphTimeRange(name, value) {
+    var graph = $("iframe#" + name);
     var url = new URL(graph.attr("src"));
-    url.searchParams.set("from", "now-" + selection.value);
+    url.searchParams.set("from", "now-" + value);
     graph.attr("src", url.href);
+}
+
+function updateGraphTimeRange(selection) {
+    var name = $(selection).data("graph");
+    var value = selection.value;
+    GraphTimeRange(name, value);
+}
+
+function updateGraphTimeRangeMul(selection, numOfGraphs) {
+    var name = "";
+    for ( var i = 0; i < numOfGraphs; i++){
+        name = $(selection).data("graph") + i.toString();
+        var value = selection.value;
+        GraphTimeRange(name, value);
+    }
 }
