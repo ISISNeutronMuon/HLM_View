@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+    
+{% block title %}
+
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'index' %}">Overview</a></li>
+      <li class="breadcrumb-item active"><a>Oxygen Display</a></li>
+    </ol>
+</nav>
+<h3 class="font-weight-light mx-5 mb-3 mt-5 text-center">Oxygen Display</h3>
+<hr class="mx-5">
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/custom/graph-range-select.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="mx-5 my-3">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col px-0">
+                    <p class="float-left">More information and time ranges available on the
+                        <a href='http://{{grafana_host}}:3000/d/184Ng-b7z/total-oxygen-level?orgId=1&from=now-24h&to=now'>
+                            <img src="{% static 'images/grafana.svg' %}" style="height: 1em;" class="ml-1 mr-1" />Grafana Dashboard
+                        </a>
+                    </p>
+                </div>
+                <div class="col px-0">
+                    <select class="custom-select float-right trends-range" data-graph="oxygen-level-graph-" onchange="updateGraphTimeRangeMul(this, 5)">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <iframe src="http://{{grafana_host}}:3000/d-solo/184Ng-b7z/total-oxygen-level?orgId=1&panelId=12&from=now-24h&to=now&view"
+                width="100%" height="350" frameborder="0" id="oxygen-level-graph-0"></iframe>
+        <div max-height = 350 class="d-flex flex-row">
+
+            <iframe class="flex-grow-1" src="http://{{grafana_host}}:3000/d-solo/184Ng-b7z/total-oxygen-level?orgId=1&panelId=4&from=now-24h&to=now&view"
+                 height="350" frameborder="0" id="oxygen-level-graph-1"></iframe>
+
+            <iframe class="flex-grow-1" src="http://{{grafana_host}}:3000/d-solo/184Ng-b7z/total-oxygen-level?orgId=1&panelId=6&from=now-24h&to=now&view"
+                 height="350" frameborder="0" id="oxygen-level-graph-2"></iframe>
+
+            <iframe class="flex-grow-1" src="http://{{grafana_host}}:3000/d-solo/184Ng-b7z/total-oxygen-level?orgId=1&panelId=8&from=now-24h&to=now&view"
+                 height="350" frameborder="0" id="oxygen-level-graph-3"></iframe>
+
+            <iframe class="flex-grow-1" src="http://{{grafana_host}}:3000/d-solo/184Ng-b7z/total-oxygen-level?orgId=1&panelId=10&from=now-24h&to=now&view"
+                 height="350" frameborder="0" id="oxygen-level-graph-4"></iframe>
+
+        </div>
+    </div>
+{% endblock %}

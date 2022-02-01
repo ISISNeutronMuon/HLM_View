@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('measurements/', views.measurements, name='measurements'),
     path('search_results/<str:encoded_dict>', views.search_results, name='search_results'),
+    path('oxygen-display/', views.oxygen_display, name='oxygen_display'),
     path('details/', views.detail, name='detail'),
     path('details/<int:object_id>', views.detail, name='detail'),
     path('object_search/', views.object_search, name='object_search'),

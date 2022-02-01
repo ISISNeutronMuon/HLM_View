@@ -63,9 +63,16 @@ def index(request):
 
     return render(request, 'index.html', context)
 
+
 def measurements(request):
     context = {}
     return render(request, 'measurements.html', context)
+
+
+def oxygen_display(request):
+    context = {'grafana_host': GRAFANA_HOST}
+    return render(request, 'oxygen-display.html', context)
+
 
 def detail(request, object_id=None):
     # Get object data (and check if exists)
