@@ -8,32 +8,32 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
-  "iteration": 1615976942256,
+  "id": 2,
+  "iteration": 1643800018992,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "color": {},
-          "custom": {},
-          "thresholds": {
-            "mode": "absolute",
-            "steps": []
-          },
           "unit": "none"
         },
         "overrides": [
@@ -76,7 +76,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.3",
+      "pluginVersion": "8.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -312,9 +312,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "$object",
       "tooltip": {
         "shared": true,
@@ -331,43 +329,36 @@
       ],
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "none",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
-      "datasource": "-- Dashboard --",
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -403,15 +394,13 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.4.3",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "panelId": 32,
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "$mea_type_1",
       "transformations": [
         {
@@ -424,13 +413,15 @@
       "type": "stat"
     },
     {
-      "datasource": "-- Dashboard --",
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -466,15 +457,13 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.4.3",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "panelId": 32,
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "$mea_type_2",
       "transformations": [
         {
@@ -487,13 +476,15 @@
       "type": "stat"
     },
     {
-      "datasource": "-- Dashboard --",
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -529,15 +520,13 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.4.3",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "panelId": 32,
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "$mea_type_3",
       "transformations": [
         {
@@ -550,13 +539,15 @@
       "type": "stat"
     },
     {
-      "datasource": "-- Dashboard --",
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -592,15 +583,13 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.4.3",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "panelId": 32,
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "$mea_type_4",
       "transformations": [
         {
@@ -613,13 +602,15 @@
       "type": "stat"
     },
     {
-      "datasource": "-- Dashboard --",
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -655,15 +646,13 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.4.3",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "panelId": 32,
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "$mea_type_5",
       "transformations": [
         {
@@ -677,7 +666,6 @@
     },
     {
       "collapsed": true,
-      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -691,7 +679,10 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "-- Dashboard --",
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {}
@@ -740,9 +731,7 @@
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "$mea_type_1",
           "tooltip": {
             "shared": true,
@@ -759,33 +748,24 @@
           ],
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -793,7 +773,10 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "-- Dashboard --",
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {}
@@ -841,9 +824,7 @@
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "$mea_type_2",
           "tooltip": {
             "shared": true,
@@ -860,33 +841,24 @@
           ],
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -894,7 +866,10 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "-- Dashboard --",
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {}
@@ -942,9 +917,7 @@
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "$mea_type_3",
           "tooltip": {
             "shared": true,
@@ -961,33 +934,24 @@
           ],
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -995,7 +959,10 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "-- Dashboard --",
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {}
@@ -1043,9 +1010,7 @@
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "$mea_type_4",
           "tooltip": {
             "shared": true,
@@ -1062,33 +1027,24 @@
           ],
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -1096,7 +1052,10 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "-- Dashboard --",
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {}
@@ -1144,9 +1103,7 @@
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "$mea_type_5",
           "tooltip": {
             "shared": true,
@@ -1163,33 +1120,24 @@
           ],
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         }
       ],
@@ -1198,7 +1146,6 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1207,12 +1154,14 @@
       },
       "id": 31,
       "panels": [],
-      "repeat": null,
       "title": "Data Table",
       "type": "row"
     },
     {
-      "datasource": "-- Dashboard --",
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1220,7 +1169,8 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": null,
+            "align": "auto",
+            "displayMode": "auto",
             "filterable": false
           },
           "mappings": [],
@@ -1261,18 +1211,23 @@
       },
       "id": 29,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "7.4.3",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "panelId": 32,
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Measurement Values",
       "transformations": [
         {
@@ -1286,7 +1241,7 @@
     }
   ],
   "refresh": "5m",
-  "schemaVersion": 27,
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "object",
@@ -1295,978 +1250,38 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {
-          "selected": true,
-          "text": "SLD \"R80 Total Gas Counter\" (ID: 138)",
-          "value": "139"
+          "selected": false,
+          "text": "Name: 1 ID: 201",
+          "value": "201"
         },
-        "datasource": null,
-        "definition": "SELECT OB_ID as __value, OB_NAME as __text FROM helium.gam_object",
+        "definition": "SELECT OB_ID as __value, CONCAT('Name: ', OB_NAME, \" ID: \", OB_ID) as __text FROM helium.gam_object",
         "description": "",
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Object",
         "multi": false,
         "name": "object",
-        "options": [
-          {
-            "selected": false,
-            "text": "101",
-            "value": "29"
-          },
-          {
-            "selected": false,
-            "text": "102",
-            "value": "30"
-          },
-          {
-            "selected": false,
-            "text": "103",
-            "value": "63"
-          },
-          {
-            "selected": false,
-            "text": "ActiveILM",
-            "value": "191"
-          },
-          {
-            "selected": false,
-            "text": "Bank 2 Impure Helium Purity Avg",
-            "value": "76"
-          },
-          {
-            "selected": false,
-            "text": "Coldbox Control Valve 103",
-            "value": "162"
-          },
-          {
-            "selected": false,
-            "text": "Coldbox Control Valve 111",
-            "value": "163"
-          },
-          {
-            "selected": false,
-            "text": "Coldbox Control Valve 112",
-            "value": "164"
-          },
-          {
-            "selected": false,
-            "text": "Coldbox He Temp",
-            "value": "165"
-          },
-          {
-            "selected": false,
-            "text": "Coldbox He Temp Limit",
-            "value": "166"
-          },
-          {
-            "selected": false,
-            "text": "Coldbox Pressure 102",
-            "value": "167"
-          },
-          {
-            "selected": false,
-            "text": "Coldbox Pressure 112",
-            "value": "168"
-          },
-          {
-            "selected": false,
-            "text": "Coldbox T106 Temperature",
-            "value": "99"
-          },
-          {
-            "selected": false,
-            "text": "Coldbox T108 Temperature",
-            "value": "100"
-          },
-          {
-            "selected": false,
-            "text": "Coldbox TT108 Temperature",
-            "value": "101"
-          },
-          {
-            "selected": false,
-            "text": "Coldbox TT111 Temperature",
-            "value": "102"
-          },
-          {
-            "selected": false,
-            "text": "Coldbox Turbine 100",
-            "value": "182"
-          },
-          {
-            "selected": false,
-            "text": "Coldbox Turbine 101",
-            "value": "183"
-          },
-          {
-            "selected": false,
-            "text": "Compressor Control Pressure - High",
-            "value": "97"
-          },
-          {
-            "selected": false,
-            "text": "Compressor Control Pressure - Low",
-            "value": "98"
-          },
-          {
-            "selected": false,
-            "text": "Control Valve 2150",
-            "value": "159"
-          },
-          {
-            "selected": false,
-            "text": "Control Valve 2160",
-            "value": "160"
-          },
-          {
-            "selected": false,
-            "text": "Control Valve 2250",
-            "value": "161"
-          },
-          {
-            "selected": false,
-            "text": "CRISP & LOQ Gas Counter",
-            "value": "154"
-          },
-          {
-            "selected": false,
-            "text": "Cryo Lab",
-            "value": "44"
-          },
-          {
-            "selected": false,
-            "text": "CRYOLAB Gas Counter",
-            "value": "156"
-          },
-          {
-            "selected": false,
-            "text": "Dew Point",
-            "value": "184"
-          },
-          {
-            "selected": false,
-            "text": "Dewar Test - DH2264",
-            "value": "20"
-          },
-          {
-            "selected": false,
-            "text": "DH 2257 - R80 office",
-            "value": "66"
-          },
-          {
-            "selected": false,
-            "text": "DH1882 - G39",
-            "value": "2"
-          },
-          {
-            "selected": false,
-            "text": "DH1884 - LET",
-            "value": "1"
-          },
-          {
-            "selected": false,
-            "text": "DH1989 - G39 - Simulated",
-            "value": "9"
-          },
-          {
-            "selected": false,
-            "text": "DH2243 - Unused",
-            "value": "11"
-          },
-          {
-            "selected": false,
-            "text": "DH2245 - Unused",
-            "value": "15"
-          },
-          {
-            "selected": false,
-            "text": "DH2246 - Unused",
-            "value": "17"
-          },
-          {
-            "selected": false,
-            "text": "DH2247 - Unused",
-            "value": "18"
-          },
-          {
-            "selected": false,
-            "text": "DH2248 - Unused",
-            "value": "13"
-          },
-          {
-            "selected": false,
-            "text": "DH2249 - Unused",
-            "value": "14"
-          },
-          {
-            "selected": false,
-            "text": "DH2250 - Unused",
-            "value": "16"
-          },
-          {
-            "selected": false,
-            "text": "DH2251 - Unused",
-            "value": "12"
-          },
-          {
-            "selected": false,
-            "text": "DH2252 - Unused",
-            "value": "19"
-          },
-          {
-            "selected": false,
-            "text": "DH2253 - South Muons",
-            "value": "4"
-          },
-          {
-            "selected": false,
-            "text": "DH2254 - POLARIS",
-            "value": "3"
-          },
-          {
-            "selected": false,
-            "text": "DH2255 - IRIS/OSIRIS",
-            "value": "8"
-          },
-          {
-            "selected": false,
-            "text": "DH2256 - HRPD",
-            "value": "6"
-          },
-          {
-            "selected": false,
-            "text": "DH2259 - WISH",
-            "value": "5"
-          },
-          {
-            "selected": false,
-            "text": "DH2260 - RIKEN",
-            "value": "7"
-          },
-          {
-            "selected": false,
-            "text": "DH2267 - Unused",
-            "value": "22"
-          },
-          {
-            "selected": false,
-            "text": "DH2268 - Unused",
-            "value": "24"
-          },
-          {
-            "selected": false,
-            "text": "DH2349",
-            "value": "192"
-          },
-          {
-            "selected": false,
-            "text": "DH2355",
-            "value": "41"
-          },
-          {
-            "selected": false,
-            "text": "DH2366",
-            "value": "40"
-          },
-          {
-            "selected": false,
-            "text": "DH2432 - LARMOR",
-            "value": "31"
-          },
-          {
-            "selected": false,
-            "text": "DH2433 - Magnet Lab 2",
-            "value": "32"
-          },
-          {
-            "selected": false,
-            "text": "DH2436 - LET 2",
-            "value": "33"
-          },
-          {
-            "selected": false,
-            "text": "DH2437 - SANS2D/Zoom",
-            "value": "34"
-          },
-          {
-            "selected": false,
-            "text": "DH2440 - LET 1",
-            "value": "35"
-          },
-          {
-            "selected": false,
-            "text": "DH2441 - Wish 2",
-            "value": "36"
-          },
-          {
-            "selected": false,
-            "text": "DH2442 - Magnet Lab 1",
-            "value": "37"
-          },
-          {
-            "selected": false,
-            "text": "DH2443 - Cryolab",
-            "value": "38"
-          },
-          {
-            "selected": false,
-            "text": "DH2444 - He Recovery Building",
-            "value": "39"
-          },
-          {
-            "selected": false,
-            "text": "DLS Main Helium Purity",
-            "value": "94"
-          },
-          {
-            "selected": false,
-            "text": "Gas Liquefaction Mass Flow",
-            "value": "174"
-          },
-          {
-            "selected": false,
-            "text": "GEM 8T Cryomagnet - DH2269",
-            "value": "25"
-          },
-          {
-            "selected": false,
-            "text": "Helium Fills Mass flowmeter",
-            "value": "175"
-          },
-          {
-            "selected": false,
-            "text": "Helium Spare Storage Bank 5 Purity",
-            "value": "79"
-          },
-          {
-            "selected": false,
-            "text": "Helium Spare Storage Bank 6 Purity",
-            "value": "82"
-          },
-          {
-            "selected": false,
-            "text": "Helium Spare Storage Bank 7 Purity",
-            "value": "85"
-          },
-          {
-            "selected": false,
-            "text": "Helium Spare Storage Bank 8 Purity",
-            "value": "88"
-          },
-          {
-            "selected": false,
-            "text": "Helium Supply Purity",
-            "value": "177"
-          },
-          {
-            "selected": false,
-            "text": "HIFI VARIOX - DH2270",
-            "value": "26"
-          },
-          {
-            "selected": false,
-            "text": "HRPD",
-            "value": "54"
-          },
-          {
-            "selected": false,
-            "text": "IMAT Gas Counter",
-            "value": "105"
-          },
-          {
-            "selected": false,
-            "text": "Impure He Supply Pressure",
-            "value": "176"
-          },
-          {
-            "selected": false,
-            "text": "INES & TOSCA Gas Counter",
-            "value": "109"
-          },
-          {
-            "selected": false,
-            "text": "Inside Magnet Lab",
-            "value": "48"
-          },
-          {
-            "selected": false,
-            "text": "IRIS",
-            "value": "53"
-          },
-          {
-            "selected": false,
-            "text": "IRIS & OSIRIS Gas Counter",
-            "value": "111"
-          },
-          {
-            "selected": false,
-            "text": "Kaiser Compressor Temp",
-            "value": "104"
-          },
-          {
-            "selected": false,
-            "text": "LARMOR",
-            "value": "56"
-          },
-          {
-            "selected": false,
-            "text": "LARMOR & OFFSPEC Gas Counter",
-            "value": "107"
-          },
-          {
-            "selected": false,
-            "text": "LET",
-            "value": "51"
-          },
-          {
-            "selected": false,
-            "text": "LET & NIMROD Gas Counter",
-            "value": "113"
-          },
-          {
-            "selected": false,
-            "text": "LET 9T Cryomagnet - DH1995",
-            "value": "10"
-          },
-          {
-            "selected": false,
-            "text": "LET Dewar Farm",
-            "value": "49"
-          },
-          {
-            "selected": false,
-            "text": "LET Orange Cryostat - DH2265",
-            "value": "28"
-          },
-          {
-            "selected": false,
-            "text": "MAGLAB Gas Counter",
-            "value": "115"
-          },
-          {
-            "selected": false,
-            "text": "Main Helium Purity",
-            "value": "91"
-          },
-          {
-            "selected": false,
-            "text": "Manifold Compressor Inlet Pressure",
-            "value": "96"
-          },
-          {
-            "selected": false,
-            "text": "MAPS & VESUVIO Gas Counter",
-            "value": "117"
-          },
-          {
-            "selected": false,
-            "text": "MCP External Temp",
-            "value": "95"
-          },
-          {
-            "selected": false,
-            "text": "MCP Liquid Helium Inventory",
-            "value": "185"
-          },
-          {
-            "selected": false,
-            "text": "MCP1 DLS Main Helium",
-            "value": "92"
-          },
-          {
-            "selected": false,
-            "text": "MCP1 Helium Spare Storage Bank 5",
-            "value": "77"
-          },
-          {
-            "selected": false,
-            "text": "MCP1 Helium Spare Storage Bank 6",
-            "value": "80"
-          },
-          {
-            "selected": false,
-            "text": "MCP1 Helium Spare Storage Bank 7",
-            "value": "83"
-          },
-          {
-            "selected": false,
-            "text": "MCP1 Helium Spare Storage Bank 8",
-            "value": "86"
-          },
-          {
-            "selected": false,
-            "text": "MCP1 Impure Helium",
-            "value": "74"
-          },
-          {
-            "selected": false,
-            "text": "MCP1 Main Helium",
-            "value": "89"
-          },
-          {
-            "selected": false,
-            "text": "MCP2 DLS Main Helium",
-            "value": "93"
-          },
-          {
-            "selected": false,
-            "text": "MCP2 Helium Spare Storage Bank 5",
-            "value": "78"
-          },
-          {
-            "selected": false,
-            "text": "MCP2 Helium Spare Storage Bank 6",
-            "value": "81"
-          },
-          {
-            "selected": false,
-            "text": "MCP2 Helium Spare Storage Bank 7",
-            "value": "84"
-          },
-          {
-            "selected": false,
-            "text": "MCP2 Helium Spare Storage Bank 8",
-            "value": "87"
-          },
-          {
-            "selected": false,
-            "text": "MCP2 Impure Helium",
-            "value": "75"
-          },
-          {
-            "selected": false,
-            "text": "MCP2 Main Helium",
-            "value": "90"
-          },
-          {
-            "selected": false,
-            "text": "MICEHALL Gas Counter",
-            "value": "119"
-          },
-          {
-            "selected": false,
-            "text": "Mother Dewar Helium Level",
-            "value": "186"
-          },
-          {
-            "selected": false,
-            "text": "MUON Gas Counter",
-            "value": "121"
-          },
-          {
-            "selected": false,
-            "text": "Muon ICE - DH2266",
-            "value": "21"
-          },
-          {
-            "selected": false,
-            "text": "Muon Mezzanine",
-            "value": "47"
-          },
-          {
-            "selected": false,
-            "text": "Outside Magnet Lab",
-            "value": "45"
-          },
-          {
-            "selected": false,
-            "text": "OXF-05 - MUSR VARIOX - DH2271",
-            "value": "23"
-          },
-          {
-            "selected": false,
-            "text": "PEARL & HRPD & MARI & ENGINX Gas Counter",
-            "value": "123"
-          },
-          {
-            "selected": false,
-            "text": "POLARIS",
-            "value": "52"
-          },
-          {
-            "selected": false,
-            "text": "Polaris Maxi 50 - DH2272",
-            "value": "27"
-          },
-          {
-            "selected": false,
-            "text": "PT203 Buffer Pressure ",
-            "value": "103"
-          },
-          {
-            "selected": false,
-            "text": "Purifier",
-            "value": "158"
-          },
-          {
-            "selected": false,
-            "text": "R10 DEWAR FARM Gas Counter",
-            "value": "124"
-          },
-          {
-            "selected": false,
-            "text": "R108",
-            "value": "42"
-          },
-          {
-            "selected": false,
-            "text": "R108 U40 Gas Counter",
-            "value": "126"
-          },
-          {
-            "selected": false,
-            "text": "R3",
-            "value": "46"
-          },
-          {
-            "selected": false,
-            "text": "R53 Gas Counter",
-            "value": "128"
-          },
-          {
-            "selected": false,
-            "text": "R55 North Gas Counter",
-            "value": "130"
-          },
-          {
-            "selected": false,
-            "text": "R55 South Gas Counter",
-            "value": "132"
-          },
-          {
-            "selected": false,
-            "text": "R55 Total Gas Counter",
-            "value": "134"
-          },
-          {
-            "selected": false,
-            "text": "R80 East Gas Counter",
-            "value": "136"
-          },
-          {
-            "selected": false,
-            "text": "R80 Total Gas Counter",
-            "value": "138"
-          },
-          {
-            "selected": false,
-            "text": "R80 West Gas Counter",
-            "value": "140"
-          },
-          {
-            "selected": false,
-            "text": "RIKEN",
-            "value": "55"
-          },
-          {
-            "selected": false,
-            "text": "RIKEN Gas Counter",
-            "value": "142"
-          },
-          {
-            "selected": false,
-            "text": "SANDALS Gas Counter",
-            "value": "144"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"CRISP & LOQ Gas Counter\" (ID: 154)",
-            "value": "155"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"CRYOLAB Gas Counter\" (ID: 156)",
-            "value": "157"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"IMAT Gas Counter\" (ID: 105)",
-            "value": "106"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"INES & TOSCA Gas Counter\" (ID: 109)",
-            "value": "110"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"IRIS & OSIRIS Gas Counter\" (ID: 111)",
-            "value": "112"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"LARMOR & OFFSPEC Gas Counter\" (ID: 107)",
-            "value": "108"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"LET & NIMROD Gas Counter\" (ID: 113)",
-            "value": "114"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"MAGLAB Gas Counter\" (ID: 115)",
-            "value": "116"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"MAPS & VESUVIO Gas Counter\" (ID: 117)",
-            "value": "118"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"MICEHALL Gas Counter\" (ID: 119)",
-            "value": "120"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"Mother Dewar Helium Level\" (ID: 186)",
-            "value": "187"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"MUON Gas Counter\" (ID: 121)",
-            "value": "122"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"R10 DEWAR FARM Gas Counter\" (ID: 124)",
-            "value": "125"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"R108 U40 Gas Counter\" (ID: 126)",
-            "value": "127"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"R53 Gas Counter\" (ID: 128)",
-            "value": "129"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"R55 North Gas Counter\" (ID: 130)",
-            "value": "131"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"R55 South Gas Counter\" (ID: 132)",
-            "value": "133"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"R55 Total Gas Counter\" (ID: 134)",
-            "value": "135"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"R80 East Gas Counter\" (ID: 136)",
-            "value": "137"
-          },
-          {
-            "selected": true,
-            "text": "SLD \"R80 Total Gas Counter\" (ID: 138)",
-            "value": "139"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"R80 West Gas Counter\" (ID: 140)",
-            "value": "141"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"RIKEN Gas Counter\" (ID: 142)",
-            "value": "143"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"SANDALS Gas Counter\" (ID: 144)",
-            "value": "145"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"SXD & MERLIN Gas Counter\" (ID: 146)",
-            "value": "147"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"WISH Dewar Farm Gas Counter\" (ID: 150)",
-            "value": "151"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"WISH Gas Counter\" (ID: 148)",
-            "value": "149"
-          },
-          {
-            "selected": false,
-            "text": "SLD \"ZOOM & SANS2D & POLREF Gas Counter\" (ID: 152)",
-            "value": "153"
-          },
-          {
-            "selected": false,
-            "text": "SXD & MERLIN Gas Counter",
-            "value": "146"
-          },
-          {
-            "selected": false,
-            "text": "Test",
-            "value": "67"
-          },
-          {
-            "selected": false,
-            "text": "Test 1",
-            "value": "65"
-          },
-          {
-            "selected": false,
-            "text": "Test Levelmeter",
-            "value": "189"
-          },
-          {
-            "selected": false,
-            "text": "Test2",
-            "value": "68"
-          },
-          {
-            "selected": false,
-            "text": "test3",
-            "value": "69"
-          },
-          {
-            "selected": false,
-            "text": "TestILM",
-            "value": "190"
-          },
-          {
-            "selected": false,
-            "text": "Transport Dewar Pressure",
-            "value": "188"
-          },
-          {
-            "selected": false,
-            "text": "TS1 Helium Gas Resupply",
-            "value": "70"
-          },
-          {
-            "selected": false,
-            "text": "TS1 Helium Purity",
-            "value": "71"
-          },
-          {
-            "selected": false,
-            "text": "TS1 North Oxygen Level",
-            "value": "178"
-          },
-          {
-            "selected": false,
-            "text": "TS1 Shutter Flowmeter",
-            "value": "169"
-          },
-          {
-            "selected": false,
-            "text": "TS1 South Oxygen Level",
-            "value": "179"
-          },
-          {
-            "selected": false,
-            "text": "TS1 Void Flowmeter",
-            "value": "170"
-          },
-          {
-            "selected": false,
-            "text": "TS1 Window Flowmeter",
-            "value": "171"
-          },
-          {
-            "selected": false,
-            "text": "TS2 East Flowmeter",
-            "value": "172"
-          },
-          {
-            "selected": false,
-            "text": "TS2 East Oxygen Level",
-            "value": "180"
-          },
-          {
-            "selected": false,
-            "text": "TS2 Helium Gas Resupply",
-            "value": "72"
-          },
-          {
-            "selected": false,
-            "text": "TS2 Helium Purity",
-            "value": "73"
-          },
-          {
-            "selected": false,
-            "text": "TS2 West Flowmeter",
-            "value": "173"
-          },
-          {
-            "selected": false,
-            "text": "TS2 West Oxygen Level",
-            "value": "181"
-          },
-          {
-            "selected": false,
-            "text": "WISH",
-            "value": "43"
-          },
-          {
-            "selected": false,
-            "text": "WISH Dewar Farm",
-            "value": "50"
-          },
-          {
-            "selected": false,
-            "text": "WISH Dewar Farm Gas Counter",
-            "value": "150"
-          },
-          {
-            "selected": false,
-            "text": "WISH Gas Counter",
-            "value": "148"
-          },
-          {
-            "selected": false,
-            "text": "ZOOM",
-            "value": "57"
-          },
-          {
-            "selected": false,
-            "text": "ZOOM & SANS2D & POLREF Gas Counter",
-            "value": "152"
-          }
-        ],
-        "query": "SELECT OB_ID as __value, OB_NAME as __text FROM helium.gam_object",
-        "refresh": 0,
+        "options": [],
+        "query": "SELECT OB_ID as __value, CONCAT('Name: ', OB_NAME, \" ID: \", OB_ID) as __text FROM helium.gam_object",
+        "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 5,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {
           "selected": false,
-          "text": "18",
-          "value": "18"
+          "text": "2",
+          "value": "2"
         },
-        "datasource": null,
         "definition": "SELECT OB_OBJECTTYPE_ID as __value FROM helium.gam_object WHERE OB_ID = $object",
-        "description": null,
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "obj_type",
         "options": [],
@@ -2276,25 +1291,19 @@
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {
           "selected": false,
-          "text": "17",
-          "value": "17"
+          "text": "2",
+          "value": "2"
         },
-        "datasource": null,
         "definition": "SELECT OT_OBJECTCLASS_ID as __value FROM helium.gam_objecttype WHERE OT_ID = $obj_type",
-        "description": null,
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "obj_class",
         "options": [],
@@ -2304,59 +1313,41 @@
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {
           "selected": false,
-          "text": "CH1 Level (%)",
-          "value": "CH1 Level (%)"
+          "text": "",
+          "value": ""
         },
-        "datasource": null,
         "definition": "SELECT OC_MEASURETYPE1 as __value FROM helium.gam_objectclass WHERE OC_ID = $obj_class",
-        "description": null,
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "mea_type_1",
-        "options": [
-          {
-            "selected": true,
-            "text": "CH1 Level (%)",
-            "value": "CH1 Level (%)"
-          }
-        ],
+        "options": [],
         "query": "SELECT OC_MEASURETYPE1 as __value FROM helium.gam_objectclass WHERE OC_ID = $obj_class",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {
           "selected": false,
-          "text": "CH2 Level (%)",
-          "value": "CH2 Level (%)"
+          "text": "",
+          "value": ""
         },
-        "datasource": null,
         "definition": "SELECT OC_MEASURETYPE2 as __value FROM helium.gam_objectclass WHERE OC_ID = $obj_class",
-        "description": null,
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "mea_type_2",
         "options": [],
@@ -2366,25 +1357,19 @@
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {
           "selected": false,
-          "text": "CH3 Level (%)",
-          "value": "CH3 Level (%)"
+          "text": "",
+          "value": ""
         },
-        "datasource": null,
         "definition": "SELECT OC_MEASURETYPE3 as __value FROM helium.gam_objectclass WHERE OC_ID = $obj_class",
-        "description": null,
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "mea_type_3",
         "options": [],
@@ -2394,59 +1379,41 @@
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {
           "selected": false,
           "text": "",
           "value": ""
         },
-        "datasource": null,
         "definition": "SELECT OC_MEASURETYPE4 as __value FROM helium.gam_objectclass WHERE OC_ID = $obj_class",
-        "description": null,
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "mea_type_4",
-        "options": [
-          {
-            "selected": true,
-            "text": "",
-            "value": ""
-          }
-        ],
+        "options": [],
         "query": "SELECT OC_MEASURETYPE4 as __value FROM helium.gam_objectclass WHERE OC_ID = $obj_class",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {
           "selected": false,
-          "text": "Heliumcontent (l)",
-          "value": "Heliumcontent (l)"
+          "text": "",
+          "value": ""
         },
-        "datasource": null,
         "definition": "SELECT OC_MEASURETYPE5 as __value FROM helium.gam_objectclass WHERE OC_ID = $obj_class",
-        "description": null,
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "mea_type_5",
         "options": [],
@@ -2456,7 +1423,6 @@
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -2471,5 +1437,6 @@
   "timezone": "Europe/London",
   "title": "Object Measurements",
   "uid": "hlmview",
-  "version": 27
+  "version": 5,
+  "weekStart": ""
 }
