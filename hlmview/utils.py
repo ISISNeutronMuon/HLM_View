@@ -21,6 +21,7 @@ class ObjectClassID(Enum):
     GAS_COUNTER_MODULE = 16
     HeLevelModule = 17  # helium level module
     LEVELMETER = 13
+    Coordinator = 1
     VESSEL = 2
     CRYOSTAT = 4
     GAS_COUNTER = 7
@@ -144,9 +145,8 @@ def calculate_differences(current_measurement, previous):
             # abs of values to avoid increasing a negative value having a negative percent change
     else:
         return None
-
+    operator = ""
     if percentage_diff != "N/A":
-        operator = ""
 
         if percentage_diff >= 0:
             percentage_diff = abs(percentage_diff)  # handle -0
@@ -252,8 +252,9 @@ def get_building_data(display_group_id):
 
 
 def get_coordinators_data(building_display_id):
+
     building_coordinators = GamObject.objects.filter(
-        ob_objecttype_id=ObjectTypeID.Coordinator.value,
+        ob_objecttype_id__ot_objectclass=ObjectClassID.Coordinator.value,
         ob_endofoperation=None,
         ob_displaygroup_id=building_display_id
     )
